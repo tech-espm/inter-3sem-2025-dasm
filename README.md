@@ -9,11 +9,11 @@
 ### 2025-01
 
 ## Integrantes
-- [Nome](https://github.com/xxx)
-- [Nome](https://github.com/xxx)
-- [Nome](https://github.com/xxx)
-- [Nome](https://github.com/xxx)
-- [Nome](https://github.com/xxx)
+- [Bianca Fagundes](https://github.com/araujozb)
+- [Gustavo Dutra](https://github.com/snowdutra)
+- [Luzivania Bonfim](https://github.com/bonfim1)
+- [Maria Gabriela Vieira](https://github.com/mgabriel4)
+- [Mateus Colmeal](https://github.com/mcolmeal)
 
 ## Descrição do Projeto
 
