@@ -16,6 +16,19 @@ html, body {
 	display: flex;
 	flex-direction: column;
 	flex-wrap: nowrap;
+
+	font-family: Signika Negative;
+}
+
+.navbar {
+	background-color: transparent;
+	max-height: 100px;
+	margin: 10px 20px 10px 20px;
+	border-radius: 20px;
+}
+.navbar a{
+	color: black;
+	text-decoration: none;
 }
 
 .conteudo {
@@ -25,7 +38,7 @@ html, body {
 
 .rodape {
 	text-align: center;
-	background-color: black;
+	background-color: rgb(255, 255, 255);
 	padding: 2rem;
 }
 
