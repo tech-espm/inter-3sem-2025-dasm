@@ -31,6 +31,14 @@ html, body {
 	text-decoration: none;
 }
 
+.navbar-collapse {
+	justify-content: center;
+}
+
+h1{
+	color: #013a63;
+}
+
 .conteudo {
 	/* Para fazer o rodapé ficar sempre na parte inferior da página ;) */
 	flex: 1 1 auto;

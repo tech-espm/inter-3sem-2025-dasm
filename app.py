@@ -14,6 +14,10 @@ def index():
 def sobre():
     return render_template('index/sobre.html', titulo='Sobre Nós')
 
+@app.get('/home')
+def home():
+    return render_template('index/homeC.html', titulo='Home')
+
 @app.get('/obterDados')
 def obterDados():
     # Obter o maior id do banco
@@ -22,9 +26,9 @@ def obterDados():
     resultado = requests.get(f'{config.url_api}?sensor=creative&id_inferior={maior_id}')
     dados_novos = resultado.json()
 
-	# Inserir os dados novos no banco
+    # Inserir os dados novos no banco
 
-	# Trazer os dados do banco
+    # Trazer os dados do banco
 
     dados = [
         { 'dia': '10/09', 'valor': 80 },
