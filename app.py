@@ -14,9 +14,17 @@ def index():
 def sobre():
     return render_template('index/sobre.html', titulo='Sobre Nós')
 
-@app.get('/home')
-def home():
+@app.get('/homeC')
+def homeC():
     return render_template('index/homeC.html', titulo='Home')
+
+@app.get('/contratar')
+def contratar():
+    return render_template('index/contratar.html', titulo='Contratar')
+
+@app.get('/login')
+def login():
+    return render_template('index/login.html', titulo='Login')
 
 @app.get('/obterDados')
 def obterDados():
