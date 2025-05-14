@@ -80,3 +80,46 @@ def criarPessoa(nome, email):
 
 # Para mais informações:
 # https://docs.sqlalchemy.org/en/14/tutorial/dbapi_transactions.html
+
+def obterIdMaximo(tabela):
+	with Session(engine) as sessao:
+		registro = sessao.execute(text(f"SELECT MAX(id) id FROM {tabela}")).first()
+
+		if registro == None or registro.id == None:
+			return 0
+		else:
+			return registro.id
+
+def inserirDados(registros):
+	with Session(engine) as sessao, sessao.begin():
+		for registro in registros:
+			sessao.execute(text("INSERT INTO passagem (id, data, id_sensor, delta, bateria, entrada, saida) VALUES (:id, :data, :id_sensor, :delta, :bateria, :entrada, :saida)"), registro)
+
+def listarConsolidadoSemana(data_inicial, data_final):
+	with Session(engine) as sessao:
+		parametros = {
+			'data_inicial': data_inicial + ' 00:00:00',
+			'data_final': data_final + ' 23:59:59'
+		}
+
+		# Mais informações sobre o método execute e sobre o resultado que ele retorna:
+		# https://docs.sqlalchemy.org/en/14/orm/session_api.html#sqlalchemy.orm.Session.execute
+		# https://docs.sqlalchemy.org/en/14/core/connections.html#sqlalchemy.engine.Result
+		registros = sessao.execute(text("""
+		select dayofweek(data) dia_semana, extract(hour from data) hora, cast(sum(entrada + saida) as signed) total
+		from passagem
+		where data between :data_inicial and :data_final
+		and id_sensor = 2
+		group by dia_semana, hora
+		"""), parametros)
+
+		lista = []
+
+		for (dia_semana, hora, total) in registros:
+			lista.append({
+				"dia_semana": dia_semana,
+				"hora": hora,
+				"total": total,
+			})
+
+		return lista
