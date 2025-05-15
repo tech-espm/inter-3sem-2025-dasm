@@ -119,7 +119,68 @@ def listarConsolidadoSemana(data_inicial, data_final):
 			lista.append({
 				"dia_semana": dia_semana,
 				"hora": hora,
-				"total": total,
+				"total": total
+			})
+
+		return lista
+
+def listarConsolidadoMensalDiaSemana(data_inicial, data_final, dia_semana):
+	with Session(engine) as sessao:
+		parametros = {
+			'data_inicial': data_inicial + ' 00:00:00',
+			'data_final': data_final + ' 23:59:59',
+			'dia_semana': dia_semana
+		}
+
+		# Mais informações sobre o método execute e sobre o resultado que ele retorna:
+		# https://docs.sqlalchemy.org/en/14/orm/session_api.html#sqlalchemy.orm.Session.execute
+		# https://docs.sqlalchemy.org/en/14/core/connections.html#sqlalchemy.engine.Result
+		registros = sessao.execute(text("""
+		select date_format(date(data), '%d/%m/%Y') dia, extract(hour from data) hora, cast(sum(entrada + saida) as signed) total
+		from passagem
+		where data between :data_inicial and :data_final
+		and dayofweek(data) = :dia_semana
+		and id_sensor = 2
+		group by dia, hora
+		"""), parametros)
+
+		lista = []
+
+		for (dia, hora, total) in registros:
+			lista.append({
+				"dia": dia,
+				"hora": hora,
+				"total": total
+			})
+
+		return lista
+
+def listarConsolidadoMensalPresenca(data_inicial, data_final):
+	with Session(engine) as sessao:
+		parametros = {
+			'data_inicial': data_inicial + ' 00:00:00',
+			'data_final': data_final + ' 23:59:59'
+		}
+
+		# Mais informações sobre o método execute e sobre o resultado que ele retorna:
+		# https://docs.sqlalchemy.org/en/14/orm/session_api.html#sqlalchemy.orm.Session.execute
+		# https://docs.sqlalchemy.org/en/14/core/connections.html#sqlalchemy.engine.Result
+		registros = sessao.execute(text("""
+		select date_format(date(data), '%d/%m/%Y') dia, extract(hour from data) hora, cast(sum(entrada) as signed) total_entrada, cast(sum(saida) as signed) total_saida
+		from passagem
+		where data between :data_inicial and :data_final
+		and id_sensor = 2
+		group by dia, hora;
+		"""), parametros)
+
+		lista = []
+
+		for (dia, hora, total_entrada, total_saida) in registros:
+			lista.append({
+				"dia": dia,
+				"hora": hora,
+				"total_entrada": total_entrada,
+				"total_saida": total_saida
 			})
 
 		return lista

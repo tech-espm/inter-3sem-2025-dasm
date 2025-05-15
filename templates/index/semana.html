@@ -14,10 +14,30 @@
 			<div class="card shadow my-4">
 				<div class="card-body">
 					<div class="row">
-						<div class="col-sm-6">
+						<div class="col-sm-4">
 							<div class="form-group">
-								<label for="data">Data</label>
-								<input id="data" name="data" class="form-control" type="date" value="{{hoje}}" />
+								<label for="data_inicial">Data Inicial</label>
+								<input id="data_inicial" name="data_inicial" class="form-control" type="date" value="{{data_inicial}}" />
+							</div>
+						</div>
+						<div class="col-sm-4">
+							<div class="form-group">
+								<label for="data_final">Data Final</label>
+								<input id="data_final" name="data_final" class="form-control" type="date" value="{{data_final}}" />
+							</div>
+						</div>
+						<div class="col-sm-4">
+							<div class="form-group">
+								<label for="dia_semana">Dia da Semana</label>
+								<select id="dia_semana" name="dia_semana" class="form-control">
+									<option value="1">Domingo</option>
+									<option value="2">Segunda-feira</option>
+									<option value="3">Terça-feira</option>
+									<option value="4">Quarta-feira</option>
+									<option value="5">Quinta-feira</option>
+									<option value="6">Sexta-feira</option>
+									<option value="7">Sábado</option>
+								</select>
 							</div>
 						</div>
 					</div>
@@ -95,17 +115,21 @@
 		waitSwal();
 
 		try {
-			let data = document.getElementById("data").value;
-			let response = await fetch(`/obterDadosSemana?data=${data}`);
+			let data_inicial = document.getElementById("data_inicial").value;
+			let data_final = document.getElementById("data_final").value;
+			let dia_semana = document.getElementById("dia_semana").value;
+			let response = await fetch(`/obterDados?data_inicial=${data_inicial}&data_final=${data_final}&dia_semana=${dia_semana}`);
 
 			if (response.ok) {
 				Swal.close();
 
-				const dados = await response.json();
-				if (!dados || !dados.length) {
-					Swal.fire("Erro", "Sem dados na data especificada!", "error");
+				const obj = await response.json();
+				if (!obj || !obj.semana || !obj.mensal_dia_semana || !obj.mensal_presenca) {
+					Swal.fire("Erro", "Sem dados no período especificado!", "error");
 					return;
 				}
+
+				let dados = obj.semana;
 
 				const colunas = ["Total", "Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
 				
