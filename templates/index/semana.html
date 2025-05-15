@@ -4,187 +4,230 @@
 
 <div class="container-fluid">
 
-	<h1>
-		Projeto
-	</h1>
+    <h1>
+        Projeto
+    </h1>
 
-	<div class="row">
-		<div class="col-sm-6 col-xl-4">
+    <div class="row">
+        <div class="col-sm-6 col-xl-4">
 
-			<div class="card shadow my-4">
-				<div class="card-body">
-					<div class="row">
-						<div class="col-sm-4">
-							<div class="form-group">
-								<label for="data_inicial">Data Inicial</label>
-								<input id="data_inicial" name="data_inicial" class="form-control" type="date" value="{{data_inicial}}" />
-							</div>
-						</div>
-						<div class="col-sm-4">
-							<div class="form-group">
-								<label for="data_final">Data Final</label>
-								<input id="data_final" name="data_final" class="form-control" type="date" value="{{data_final}}" />
-							</div>
-						</div>
-						<div class="col-sm-4">
-							<div class="form-group">
-								<label for="dia_semana">Dia da Semana</label>
-								<select id="dia_semana" name="dia_semana" class="form-control">
-									<option value="1">Domingo</option>
-									<option value="2">Segunda-feira</option>
-									<option value="3">Terça-feira</option>
-									<option value="4">Quarta-feira</option>
-									<option value="5">Quinta-feira</option>
-									<option value="6">Sexta-feira</option>
-									<option value="7">Sábado</option>
-								</select>
-							</div>
-						</div>
-					</div>
+            <div class="card shadow my-4">
+                <div class="card-body">
+                    <form id="form">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label for="data_inicial">Data Inicial</label>
+                                    <input id="data_inicial" name="data_inicial" class="form-control" type="date" value="{{data_inicial}}" />
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label for="data_final">Data Final</label>
+                                    <input id="data_final" name="data_final" class="form-control" type="date" value="{{data_final}}" />
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label for="dia_semana">Dia da Semana</label>
+                                    <select id="dia_semana" name="dia_semana" class="form-control">
+                                        <option value="1">Domingo</option>
+                                        <option value="2">Segunda-feira</option>
+                                        <option value="3">Terça-feira</option>
+                                        <option value="4">Quarta-feira</option>
+                                        <option value="5">Quinta-feira</option>
+                                        <option value="6">Sexta-feira</option>
+                                        <option value="7">Sábado</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Listar</button>
+                    </form>
+                </div>
+            </div>
 
-					<button type="submit" class="btn btn-primary">Listar</button>
-				</div>
-			</div>
+        </div>
+    </div>
 
-		</div>
-	</div>
-
-	<div class="card shadow my-4">
-		<div class="card-body" id="div-heatmap"></div>
-	</div>
+    <div class="card shadow my-4">
+        <div class="card-body" id="div-heatmap"></div>
+    </div>
+    <div class="card shadow my-4">
+        <div class="card-body" id="div-grafico-semana"></div>
+    </div>
 
 </div>
 
 <script src="/static/js/jquery-validate/jquery.validate.min.js"></script>
 <script src="/static/js/jquery-validate/additional-methods.min.js"></script>
 <script src="/static/js/jquery-validate/localization/messages_pt_BR.min.js"></script>
+<script type="text/javascript" src="/static/js/chart.js/chart.min.js"></script>
 
 <script type="text/javascript">
-	"use strict";
+    "use strict";
 
-	function relativeLuminance(rgb) {
-		if ((typeof rgb) === "string")
-			rgb = parseInt(rgb.replace("#", ""), 16);
-		rgb |= 0;
-		if (rgb < 0)
-			return 1;
-		//http://www.w3.org/TR/2007/WD-WCAG20-TECHS-20070517/Overview.html#G18
-		var RsRGB = ((rgb >>> 16) & 0xff) / 255.0,
-			GsRGB = ((rgb >>> 8) & 0xff) / 255.0,
-			BsRGB = (rgb & 0xff) / 255.0,
-			R, G, B;
-		if (RsRGB <= 0.03928) R = RsRGB / 12.92; else R = Math.pow((RsRGB + 0.055) / 1.055, 2.4);
-		if (GsRGB <= 0.03928) G = GsRGB / 12.92; else G = Math.pow((GsRGB + 0.055) / 1.055, 2.4);
-		if (BsRGB <= 0.03928) B = BsRGB / 12.92; else B = Math.pow((BsRGB + 0.055) / 1.055, 2.4);
-		return (0.2126 * R) + (0.7152 * G) + (0.0722 * B);
-	}
+    function relativeLuminance(rgb) {
+        if ((typeof rgb) === "string")
+            rgb = parseInt(rgb.replace("#", ""), 16);
+        rgb |= 0;
+        if (rgb < 0)
+            return 1;
+        var RsRGB = ((rgb >>> 16) & 0xff) / 255.0,
+            GsRGB = ((rgb >>> 8) & 0xff) / 255.0,
+            BsRGB = (rgb & 0xff) / 255.0,
+            R, G, B;
+        if (RsRGB <= 0.03928) R = RsRGB / 12.92; else R = Math.pow((RsRGB + 0.055) / 1.055, 2.4);
+        if (GsRGB <= 0.03928) G = GsRGB / 12.92; else G = Math.pow((GsRGB + 0.055) / 1.055, 2.4);
+        if (BsRGB <= 0.03928) B = BsRGB / 12.92; else B = Math.pow((BsRGB + 0.055) / 1.055, 2.4);
+        return (0.2126 * R) + (0.7152 * G) + (0.0722 * B);
+    }
 
-	function textColorForBackground(i) {
-		return (relativeLuminance(i) < 0.4) ? "#ffffff" : "#000000";
-	}
+    function textColorForBackground(i) {
+        return (relativeLuminance(i) < 0.4) ? "#ffffff" : "#000000";
+    }
 
-	function coresHeatmap(perc) {
-		const r0 = 0xff;
-		const g0 = 0xff;
-		const b0 = 0xff;
-		const r1 = 0xff;
-		const g1 = 0xcc;
-		const b1 = 0x00;
-		let r = Math.max(0, Math.min(255, ((perc * r1) + ((1 - perc) * r0)) | 0)).toString(16);
-		let g = Math.max(0, Math.min(255, ((perc * g1) + ((1 - perc) * g0)) | 0)).toString(16);
-		let b = Math.max(0, Math.min(255, ((perc * b1) + ((1 - perc) * b0)) | 0)).toString(16);
-		if (r.length < 2) r = "0" + r;
-		if (g.length < 2) g = "0" + g;
-		if (b.length < 2) b = "0" + b;
-		const corFundo = "#" + r + g + b;
-		const corTexto = textColorForBackground(corFundo);
-		return `background-color: ${corFundo}; color: ${corTexto};`;
-	}
+    function coresHeatmap(perc) {
+        const r0 = 0xff;
+        const g0 = 0xff;
+        const b0 = 0xff;
+        const r1 = 0xff;
+        const g1 = 0xcc;
+        const b1 = 0x00;
+        let r = Math.max(0, Math.min(255, ((perc * r1) + ((1 - perc) * r0)) | 0)).toString(16);
+        let g = Math.max(0, Math.min(255, ((perc * g1) + ((1 - perc) * g0)) | 0)).toString(16);
+        let b = Math.max(0, Math.min(255, ((perc * b1) + ((1 - perc) * b0)) | 0)).toString(16);
+        if (r.length < 2) r = "0" + r;
+        if (g.length < 2) g = "0" + g;
+        if (b.length < 2) b = "0" + b;
+        const corFundo = "#" + r + g + b;
+        const corTexto = textColorForBackground(corFundo);
+        return `background-color: ${corFundo}; color: ${corTexto};`;
+    }
 
-	$("#form").validate({
-		rules: {
-			data_inicial: { required: true },
-			data_final: { required: true }
-		},
-		submitHandler: function () {
-			atualizarDados();
-		}
-	});
+    $("#form").validate({
+        rules: {
+            data_inicial: { required: true },
+            data_final: { required: true }
+        },
+        submitHandler: function () {
+            atualizarDados();
+        }
+    });
 
-	async function atualizarDados() {
-		waitSwal();
+    async function atualizarDados() {
+        waitSwal();
 
-		try {
-			let data_inicial = document.getElementById("data_inicial").value;
-			let data_final = document.getElementById("data_final").value;
-			let dia_semana = document.getElementById("dia_semana").value;
-			let response = await fetch(`/obterDados?data_inicial=${data_inicial}&data_final=${data_final}&dia_semana=${dia_semana}`);
+        try {
+            let data_inicial = document.getElementById("data_inicial").value;
+            let data_final = document.getElementById("data_final").value;
+            let dia_semana = document.getElementById("dia_semana").value;
+            let response = await fetch(`/obterDados?data_inicial=${data_inicial}&data_final=${data_final}&dia_semana=${dia_semana}`);
 
-			if (response.ok) {
-				Swal.close();
+            if (response.ok) {
+                Swal.close();
 
-				const obj = await response.json();
-				if (!obj || !obj.semana || !obj.mensal_dia_semana || !obj.mensal_presenca) {
-					Swal.fire("Erro", "Sem dados no período especificado!", "error");
-					return;
-				}
+                const obj = await response.json();
+                if (!obj || !obj.semana || !obj.mensal_dia_semana || !obj.mensal_presenca) {
+                    Swal.fire("Erro", "Sem dados no período especificado!", "error");
+                    return;
+                }
 
-				let dados = obj.semana;
+                let dados = obj.semana;
 
-				const colunas = ["Total", "Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
-				
-				let html = [`<table class="table table-bordered table-sm w-50 mx-auto" style="height: auto; line-height: 1.2;"><thead><tr>`];
-				for (let i = 0; i < colunas.length; i++) {
-					html.push(`<th>${colunas[i]}</th>`);
-				}
+                const colunas = ["Total", "Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
+                
+                let html = [`<table class="table table-bordered table-sm w-50 mx-auto" style="height: auto; line-height: 1.2;"><thead><tr>`];
+                for (let i = 0; i < colunas.length; i++) {
+                    html.push(`<th>${colunas[i]}</th>`);
+                }
 
-				html.push(`
-					</tr>
-					</thead>
-					<tbody>
-				`);
+                html.push(`
+                    </tr>
+                    </thead>
+                    <tbody>
+                `);
 
-				let menor = dados[0].total;
-				let maior = dados[0].total;
+                let menor = dados[0].total;
+                let maior = dados[0].total;
 
-				for (let i = 0; i < dados.length; i++) {
-					const dado = dados[i];
-					if (menor > dado.total)
-						menor = dado.total;
-					if (maior < dado.total)
-						maior = dado.total;
-				}
+                for (let i = 0; i < dados.length; i++) {
+                    const dado = dados[i];
+                    if (menor > dado.total)
+                        menor = dado.total;
+                    if (maior < dado.total)
+                        maior = dado.total;
+                }
 
-				let delta = (maior - menor) || 1;
+                let delta = (maior - menor) || 1;
 
-				for (let h = 0; h <= 23; h++) {
-					html.push(`<tr><td>${h}:00</td>`);
-					for (let d = 1; d <= 7; d++) {
-						let total = 0;
-						for (let i = 0; i < dados.length; i++) {
-							if (dados[i].dia_semana === d && dados[i].hora === h) {
-								total = dados[i].total;
-								break;
-							}
-						}
-						let n = (total - menor) / delta;
-						html.push(`<td style="${coresHeatmap(n)}">${total}</td>`);
-					}
-					html.push(`</tr>`);
-				}
+                for (let h = 0; h <= 23; h++) {
+                    html.push(`<tr><td>${h}:00</td>`);
+                    for (let d = 1; d <= 7; d++) {
+                        let total = 0;
+                        for (let i = 0; i < dados.length; i++) {
+                            if (dados[i].dia_semana === d && dados[i].hora === h) {
+                                total = dados[i].total;
+                                break;
+                            }
+                        }
+                        let n = (total - menor) / delta;
+                        html.push(`<td style="${coresHeatmap(n)}">${total}</td>`);
+                    }
+                    html.push(`</tr>`);
+                }
 
-				html.push(`</tbody></table>`);
-				document.getElementById("div-heatmap").innerHTML = html.join('');
+                html.push(`</tbody></table>`);
+                document.getElementById("div-heatmap").innerHTML = html.join('');
 
-			} else {
-				await exibirErro(response);
-			}
-		} catch (ex) {
-			Swal.fire("Erro", "Erro ao listar os dados: " + ex.message, "error");
-		}
-	}
+                // --- NOVO: Gráfico de barras por dia da semana ---
+                let totaisPorDia = [0, 0, 0, 0, 0, 0, 0]; // Domingo a Sábado
+                for (let i = 0; i < dados.length; i++) {
+                    let d = dados[i];
+                    if (d.dia_semana >= 1 && d.dia_semana <= 7) {
+                        totaisPorDia[d.dia_semana - 1] += d.total;
+                    }
+                }
 
-	atualizarDados();
+                let labels = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
+                let ctxDiv = document.getElementById("div-grafico-semana");
+                ctxDiv.innerHTML = '<canvas id="grafico-semana" style="height: 40vh;"></canvas>';
+                let ctx = document.getElementById("grafico-semana").getContext('2d');
+
+                new Chart(ctx, {
+                    type: "bar",
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: "Total por Dia da Semana",
+                            backgroundColor: "#4e73df",
+                            borderColor: "#4e73df",
+                            data: totaisPorDia,
+                        }],
+                    },
+                    options: {
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+                // --- FIM NOVO ---
+
+            } else {
+                await exibirErro(response);
+            }
+        } catch (ex) {
+            Swal.fire("Erro", "Erro ao listar os dados: " + ex.message, "error");
+        }
+    }
+
+    atualizarDados();
 </script>
 
 {% endblock %}
