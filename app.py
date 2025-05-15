@@ -1,7 +1,6 @@
 from flask import Flask, render_template, json, request, Response
-import config
-import requests
 from datetime import datetime, timedelta
+import config
 import banco
 
 app = Flask(__name__)
@@ -17,7 +16,8 @@ def sobre():
 
 @app.get('/homeC')
 def homeC():
-    return render_template('index/homeC.html', titulo='Home')
+    hoje = datetime.today().strftime('%Y-%m-%d')
+    return render_template('index/homeC.html', titulo='Home', hoje=hoje)
 
 @app.get('/contratar')
 def contratar():
@@ -29,32 +29,17 @@ def login():
 
 @app.route("/obterDados")
 def obterDados():
-    #data_final = request.args['data']
-    #data_inicial = (datetime.strptime(data_final, '%Y-%m-%d') + timedelta(days=-6)).strftime('%Y-%m-%d')
-    data_inicial_semana = (datetime.today() + timedelta(days=-6)).strftime('%Y-%m-%d')
-    data_final_semana = datetime.today().strftime('%Y-%m-%d')
+    data_inicial = request.args.get('data_inicial')
+    data_final = request.args.get('data_final')
+    dia_semana = request.args.get('dia_semana')
 
-    data_inicial = request.args['data_inicial']
-    data_final = request.args['data_final']
-    dia_semana = request.args['dia_semana']
+    if not data_inicial or not data_final or not dia_semana:
+        return json.jsonify({"erro": "Parâmetros obrigatórios não informados."}), 400
 
-    # Obter o maior id do banco
-    maior_id = banco.obterIdMaximo("passagem")
-
-    resultado = requests.get(f'{config.url_api}?sensor=passage&id_sensor=2&id_inferior={maior_id}')
-    dados_novos = resultado.json()
-
-    # Inserir os dados novos no banco
-    if dados_novos and len(dados_novos) > 0:
-        banco.inserirDados(dados_novos)
-
-    # Trazer os dados do banco
-    semana = banco.listarConsolidadoSemana(data_inicial_semana, data_final_semana)
     mensal_dia_semana = banco.listarConsolidadoMensalDiaSemana(data_inicial, data_final, dia_semana)
     mensal_presenca = banco.listarConsolidadoMensalPresenca(data_inicial, data_final)
 
     return json.jsonify({
-        'semana': semana,
         'mensal_dia_semana': mensal_dia_semana,
         'mensal_presenca': mensal_presenca,
     })
@@ -68,8 +53,8 @@ def semana():
 @app.post('/criar')
 def criar():
     dados = request.json
-    print(dados['id'])
-    print(dados['nome'])
+    print(dados.get('id'))
+    print(dados.get('nome'))
     return Response(status=204)
 
 if __name__ == '__main__':
