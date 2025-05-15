@@ -2,6 +2,7 @@ from flask import Flask, render_template, json, request, Response
 from datetime import datetime, timedelta
 import config
 import banco
+import requests
 
 app = Flask(__name__)
 
@@ -36,10 +37,23 @@ def obterDados():
     if not data_inicial or not data_final or not dia_semana:
         return json.jsonify({"erro": "Parâmetros obrigatórios não informados."}), 400
 
+    # Obter o maior id do banco
+    maior_id = banco.obterIdMaximo("passagem")
+
+    # Buscar dados novos da API externa
+    resultado = requests.get(f'{config.url_api}?sensor=passage&id_sensor=2&id_inferior={maior_id}')
+    dados_novos = resultado.json()
+
+    # Inserir os dados novos no banco
+    if dados_novos and len(dados_novos) > 0:
+        banco.inserirDados(dados_novos)
+
+    semanal = banco.listarConsolidadoSemana(data_inicial, data_final)
     mensal_dia_semana = banco.listarConsolidadoMensalDiaSemana(data_inicial, data_final, dia_semana)
     mensal_presenca = banco.listarConsolidadoMensalPresenca(data_inicial, data_final)
 
     return json.jsonify({
+        'semana': semanal,
         'mensal_dia_semana': mensal_dia_semana,
         'mensal_presenca': mensal_presenca,
     })
