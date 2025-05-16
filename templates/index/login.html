@@ -1,33 +1,227 @@
 <style>
+    @import url('https://fonts.googleapis.com/css2?family=Signika+Negative:wght@300;500;700&display=swap');
+    
+    :root {
+        --deep-blue-1: #012a4a;
+        --deep-blue-2: #013a63;
+        --deep-blue-3: #01497c;
+        --deep-blue-4: #014f86;
+        --ocean-blue-1: #2a6f97;
+        --ocean-blue-2: #2c7da0;
+        --aqua-blue-1: #468faf;
+        --aqua-blue-2: #61a5c2;
+        --sky-blue-1: #89c2d9;
+        --sky-blue-2: #a9d6e5;
+    }
+
     body {
-        font-family: Signifika Negative, sans-serif;
+        font-family: 'Signika Negative', sans-serif;
+        background: linear-gradient(45deg, var(--deep-blue-1), var(--deep-blue-2), var(--deep-blue-3));
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        margin: 0;
+        overflow-x: hidden;
+        justify-content: center;
+    }
+
+    .glass-container {
+        background: linear-gradient(145deg, rgba(1, 66, 122, 0.2), rgba(42, 111, 151, 0.15));
+        backdrop-filter: blur(15px);
+        border-radius: 20px;
+        border: 1px solid rgba(169, 214, 229, 0.15);
+        box-shadow: 0 12px 40px rgba(1, 42, 74, 0.4);
+        padding: 40px;
+        transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .glass-container:hover {
+        transform: translateY(-5px) scale(1.02);
+    }
+
+    h1 {
+        color: var(--sky-blue-2);
+        text-shadow: 0 4px 12px rgba(1, 66, 122, 0.4);
+        font-size: 2.8rem;
+        letter-spacing: 1.5px;
+        margin-bottom: 40px !important;
+        position: relative;
+    }
+
+    h1::after {
+        content: '';
+        position: absolute;
+        bottom: -15px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 3px;
+        background: linear-gradient(90deg, var(--aqua-blue-1), var(--sky-blue-1));
+        border-radius: 2px;
+    }
+
+    .form-group label {
+        color: var(--sky-blue-1);
+        font-weight: 500;
+        letter-spacing: 0.8px;
+        margin-bottom: 8px;
+    }
+
+    .form-control {
+        background: rgba(169, 214, 229, 0.1) !important;
+        border: 1px solid rgba(169, 214, 229, 0.25) !important;
+        color: var(--sky-blue-2) !important;
+        border-radius: 8px !important;
+        padding: 14px 20px !important;
+        transition: all 0.3s ease !important;
+    }
+
+    .form-control::placeholder {
+        color: rgba(169, 214, 229, 0.6) !important;
+    }
+
+    .form-control:focus {
+        box-shadow: 0 0 20px rgba(101, 165, 194, 0.3) !important;
+        border-color: var(--aqua-blue-2) !important;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--ocean-blue-1), var(--aqua-blue-1));
+        border: none !important;
+        border-radius: 8px !important;
+        padding: 14px 30px !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+    }
+
+    .btn-primary:hover {
+        background: linear-gradient(135deg, var(--aqua-blue-1), var(--sky-blue-1));
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(42, 111, 151, 0.4);
+    }
+
+    .social-login {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin: 30px 0;
+    }
+
+    .social-btn {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px !important;
+        border: 1.5px solid var(--aqua-blue-2) !important;
+        background: rgba(169, 214, 229, 0.05) !important;
+        transition: all 0.3s ease;
+    }
+
+    .social-btn:hover {
+        background: rgba(101, 165, 194, 0.15) !important;
+        transform: translateY(-3px) rotate(5deg);
+        border-color: var(--sky-blue-1) !important;
+    }
+
+    .links-section a {
+        color: var(--aqua-blue-2) !important;
+        text-decoration: none;
+        font-weight: 500;
+        position: relative;
+    }
+
+    .links-section a::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 0;
+        height: 1.5px;
+        background: var(--sky-blue-1);
+        transition: width 0.3s ease;
+    }
+
+    .links-section a:hover::after {
+        width: 100%;
+    }
+
+    .animated-bubbles {
+        position: fixed;
+        width: 100vw;
+        height: 100vh;
+        z-index: -1;
+        overflow: hidden;
+    }
+
+    .bubble {
+        position: absolute;
+        border-radius: 50%;
+        background: radial-gradient(circle at 30% 30%, rgba(169, 214, 229, 0.15), rgba(101, 165, 194, 0.1));
+        animation: float 20s infinite linear;
+    }
+
+    @keyframes float {
+        0% {
+            transform: translateY(100vh) scale(0.5);
+            opacity: 0;
+        }
+        50% {
+            opacity: 0.4;
+        }
+        100% {
+            transform: translateY(-100vh) scale(1.2);
+            opacity: 0;
+        }
     }
 </style>
+
+<div class="animated-bubbles">
+    <!-- Bolhas animadas de fundo -->
+    <div class="bubble" style="left: 10%; width: 120px; height: 120px; animation-delay: 0s"></div>
+    <div class="bubble" style="left: 30%; width: 80px; height: 80px; animation-delay: 4s"></div>
+    <div class="bubble" style="left: 70%; width: 150px; height: 150px; animation-delay: 8s"></div>
+</div>
+
 <div class="container-fluid">
-    <h1 style="text-align: center; font-weight: bold; margin: 50px;">
-        Login
-    </h1>
     <div class="row">
         <div class="col-md-6 offset-md-3">
-            <form>
-                <div class="form-group">
-                    <label for="username">Username</label>
-                    <input type="text" class="form-control" id="username" placeholder="Enter username">
-                </div>
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" class="form-control" id="password" placeholder="Enter password">
-                </div>
-                <button type="submit" class="btn btn-primary">Login</button>
-            </form>
-        </div>
-        <div class="col-md-6 offset-md-3">
-            <p style="text-align: center; margin-top: 20px;">
-                Não tem uma conta? <a href="/register">Registrar</a>
-            </p>
-            <p style="text-align: center;">
-                Esqueceu sua senha? <a href="/reset-password">Redefinir Senha</a>
-            </p>
+            <div class="glass-container">
+                <h1 style="text-align: center; margin: 20px 0;">
+                    Login - DASM
+                </h1>
+                <form style="justify-content: center; display: flex; flex-direction: column;">
+                    <div class="form-group" style="margin: 10px;">
+                        <label for="username">Usuário</label>
+                        <input type="text" class="form-control" id="username" placeholder="ex: usuario@empresa.com">
+                    </div>
+                    <div class="form-group" style="margin: 10px;">
+                        <label for="password">Senha</label>
+                        <input type="password" class="form-control" id="password" placeholder="••••••••">
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="color: white;">Conectar</button>
+                    
+                    <div class="social-login">
+                        <button type="button" class="btn social-btn">
+                            <i class="fas fa-fingerprint" style="color: var(--sky-blue-1);"></i>
+                        </button>
+                        <button type="button" class="btn social-btn">
+                            <i class="fas fa-id-card" style="color: var(--sky-blue-1);"></i>
+                        </button>
+                        <button type="button" class="btn social-btn">
+                            <i class="fas fa-shield-alt" style="color: var(--sky-blue-1);"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="links-section">
+                        <p style="text-align: center; margin-top: 25px; color: var(--aqua-blue-2)">
+                            Primeiro acesso? <a href="/register">Registrar</a>
+                        </p>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">

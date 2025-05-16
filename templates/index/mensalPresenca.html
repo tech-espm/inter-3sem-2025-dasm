@@ -4,13 +4,12 @@
 
 <div class="container-fluid">
 
-    <h1>
-        Projeto
+    <h1 class="text-center my-4" style="font-weight: bold;">
+        DASM
     </h1>
 
     <div class="row">
         <div class="col-md-8">
-
             <div class="card shadow my-4">
                 <div class="card-body">
                     <form id="form">
@@ -46,13 +45,20 @@
                     </form>
                 </div>
             </div>
-
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow my-4">
+                <div class="card-body">
+                    <h1 style="text-align: center; font-size: 1.5rem;">Dados dos Últimos 7 Dias</h1>
+                    <div></div>
+                </div>
+            </div>
         </div>
     </div>
 
     <div class="card shadow my-4">
         <div class="card-body">
-			<h1>Consolidado pelo Dia da Semana Selecionado</h1>
+			<h1 style="text-align: center; font-size: 1.5rem;">Consolidado pelo Dia da Semana Selecionado</h1>
 			<div id="div-heatmap-dia-semana"></div>
 		</div>
     </div>
@@ -91,9 +97,9 @@
         const r0 = 0xff;
         const g0 = 0xff;
         const b0 = 0xff;
-        const r1 = 0xff;
-        const g1 = 0xcc;
-        const b1 = 0x00;
+        const r1 = 0x00;
+        const g1 = 0x00; 
+        const b1 = 0xff;
         let r = Math.max(0, Math.min(255, ((perc * r1) + ((1 - perc) * r0)) | 0)).toString(16);
         let g = Math.max(0, Math.min(255, ((perc * g1) + ((1 - perc) * g0)) | 0)).toString(16);
         let b = Math.max(0, Math.min(255, ((perc * b1) + ((1 - perc) * b0)) | 0)).toString(16);
