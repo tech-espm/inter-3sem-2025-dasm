@@ -13,18 +13,23 @@
 		font-size: 16px;
 		margin-bottom: 10px;
 	}
-	.colVermelho {
+	.cardIntegrante {
 		background-color: #2c7da0;
 		border-radius: 30px 30px 30px 0px;
-		padding: 10px 20px;
+		padding: 30px 20px;
 		text-align: center;
 		min-height: 100%;
 		box-shadow: 6px 6px 6px #89c2d9;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		height: 100%;
 	}
-	.Time {
+	.fotoIntegrante {
 		width: 100%;
-		max-width: 300px;
+		max-width: 180px;
 		border-radius: 20px;
+		margin-bottom: 10px;
 	}
 	.legenda {
 		font-size: 12px;
@@ -49,66 +54,48 @@
 	<div class="row">
 		<!-- Bianca -->
 		<div class="col-md-4 pb-3">
-			<div class="colVermelho">
+			<div class="cardIntegrante">
+				<img class="fotoIntegrante" src="static/img/bianca.jpeg" alt="Foto da integrante Bianca.">
 				<h2 class="tituloSecao">Bianca C. Fagundes de Araújo</h2>
-				<div class="row">
-					<div class="col-lg-6">
-						<img class="Time" src="static/img/bianca.jpeg" alt="Foto da integrante Bianca.">
-					</div>
-					<div class="col-lg-6">
-						<div class="legenda">
-							<p>Estudante da ESPM de Sistema de Informação - 3° semestre, 20 anos</p>
-							<p>Maceió - AL</p>
-						</div>
-						<div class="logos">
-							<a class="foto-logo" href="https://github.com/araujozb"><img src="static/img/github.png" alt="GitHub"></a>
-							<a class="foto-logo" href="https://www.linkedin.com/in/bianca-araújo-b89803229/"><img src="static/img/linkedin.png" alt="LinkedIn"></a>
-						</div>
-					</div>
+				<div class="legenda">
+					<p>Estudante da ESPM de Sistema de Informação - 3° semestre, 20 anos</p>
+					<p>Maceió - AL</p>
+				</div>
+				<div class="logos">
+					<a class="foto-logo" href="https://github.com/araujozb"><img src="static/img/github.png" alt="GitHub"></a>
+					<a class="foto-logo" href="https://www.linkedin.com/in/bianca-araújo-b89803229/"><img src="static/img/linkedin.png" alt="LinkedIn"></a>
 				</div>
 			</div>
 		</div>
 
 		<!-- Luzivania -->
 		<div class="col-md-4 pb-3">
-			<div class="colVermelho">
+			<div class="cardIntegrante">
+				<img class="fotoIntegrante" src="static/img/luzi.jpeg" alt="Foto da integrante Luzivania.">
 				<h2 class="tituloSecao">Luzivania de Jesus Bonfim</h2>
-				<div class="row">
-					<div class="col-lg-6">
-						<img class="Time" src="static/img/luzi.jpeg" alt="Foto da integrante Luzivania.">
-					</div>
-					<div class="col-lg-6">
-						<div class="legenda">
-							<p>Estudante da ESPM de Sistema de Informação - 3° semestre, 19 anos</p>
-							<p>São Paulo - SP</p>
-						</div>
-						<div class="logos">
-							<a class="foto-logo" href="https://github.com/bonfim1"><img src="static/img/github.png" alt="GitHub"></a>
-							<a class="foto-logo" href="https://www.linkedin.com/in/luzivania-de-jesus-bonfim-57a481281/"><img src="static/img/linkedin.png" alt="LinkedIn"></a>
-						</div>
-					</div>
+				<div class="legenda">
+					<p>Estudante da ESPM de Sistema de Informação - 3° semestre, 19 anos</p>
+					<p>São Paulo - SP</p>
+				</div>
+				<div class="logos">
+					<a class="foto-logo" href="https://github.com/bonfim1"><img src="static/img/github.png" alt="GitHub"></a>
+					<a class="foto-logo" href="https://www.linkedin.com/in/luzivania-de-jesus-bonfim-57a481281/"><img src="static/img/linkedin.png" alt="LinkedIn"></a>
 				</div>
 			</div>
 		</div>
 
 		<!-- Gustavo -->
 		<div class="col-md-4 pb-3">
-			<div class="colVermelho">
+			<div class="cardIntegrante">
+				<img class="fotoIntegrante" src="static/img/gu.jpeg" alt="Foto do integrante Gustavo.">
 				<h2 class="tituloSecao">Gustavo Dutra Telles</h2>
-				<div class="row">
-					<div class="col-lg-6">
-						<img class="Time" src="static/img/gu.jpeg" alt="Foto do integrante Gustavo.">
-					</div>
-					<div class="col-lg-6">
-						<div class="legenda">
-							<p>Estudante da ESPM de Sistema de Informação - 3° semestre, 20 anos</p>
-							<p>São Paulo - SP</p>
-						</div>
-						<div class="logos">
-							<a class="foto-logo" href="https://github.com/snowdutra"><img src="static/img/github.png" alt="GitHub"></a>
-							<a class="foto-logo" href="https://www.linkedin.com/in/gustavo-dutra-/"><img src="static/img/linkedin.png" alt="LinkedIn"></a>
-						</div>
-					</div>
+				<div class="legenda">
+					<p>Estudante da ESPM de Sistema de Informação - 3° semestre, 20 anos</p>
+					<p>São Paulo - SP</p>
+				</div>
+				<div class="logos">
+					<a class="foto-logo" href="https://github.com/snowdutra"><img src="static/img/github.png" alt="GitHub"></a>
+					<a class="foto-logo" href="https://www.linkedin.com/in/gustavo-dutra-/"><img src="static/img/linkedin.png" alt="LinkedIn"></a>
 				</div>
 			</div>
 		</div>
@@ -117,44 +104,32 @@
 	<div class="row">
 		<!-- Maria Gabriela -->
 		<div class="col-md-6 pb-2">
-			<div class="colVermelho">
+			<div class="cardIntegrante">
+				<img class="fotoIntegrante" src="static/img/maria.jpeg" alt="Foto da integrante Maria Gabriela.">
 				<h2 class="tituloSecao">Maria Gabriela Vieira dos Santos</h2>
-				<div class="row">
-					<div class="col-lg-6">
-						<img class="Time" src="static/img/maria.jpeg" alt="Foto da integrante Maria Gabriela.">
-					</div>
-					<div class="col-lg-6">
-						<div class="legenda">
-							<p>Estudante da ESPM de Sistema de Informação - 3° semestre, 19 anos</p>
-							<p>São Paulo - SP</p>
-						</div>
-						<div class="logos">
-							<a class="foto-logo" href="https://github.com/mgabriel4"><img src="static/img/github.png" alt="GitHub"></a>
-							<a class="foto-logo" href="https://www.linkedin.com/in/maria-gabriela-santos-34b293239/"><img src="static/img/linkedin.png" alt="LinkedIn"></a>
-						</div>
-					</div>
+				<div class="legenda">
+					<p>Estudante da ESPM de Sistema de Informação - 3° semestre, 19 anos</p>
+					<p>São Paulo - SP</p>
+				</div>
+				<div class="logos">
+					<a class="foto-logo" href="https://github.com/mgabriel4"><img src="static/img/github.png" alt="GitHub"></a>
+					<a class="foto-logo" href="https://www.linkedin.com/in/maria-gabriela-santos-34b293239/"><img src="static/img/linkedin.png" alt="LinkedIn"></a>
 				</div>
 			</div>
 		</div>
 
 		<!-- Mateus -->
 		<div class="col-md-6 pb-2">
-			<div class="colVermelho">
+			<div class="cardIntegrante">
+				<img class="fotoIntegrante" src="static/img/mateus.jpeg" alt="Foto do integrante Mateus.">
 				<h2 class="tituloSecao">Mateus Carnevale Colmeal</h2>
-				<div class="row">
-					<div class="col-lg-6">
-						<img class="Time" src="static/img/mateus.jpeg" alt="Foto do integrante Mateus.">
-					</div>
-					<div class="col-lg-6">
-						<div class="legenda">
-							<p>Estudante da ESPM de Sistema de Informação - 3° semestre, 20 anos</p>
-							<p>Mogi das Cruzes - SP</p>
-						</div>
-						<div class="logos">
-							<a class="foto-logo" href="https://github.com/colmeal"><img src="static/img/github.png" alt="GitHub"></a>
-							<a class="foto-logo" href="https://www.linkedin.com/in/mateus-carnevale-colmeal-579690303/"><img src="static/img/linkedin.png" alt="LinkedIn"></a>
-						</div>
-					</div>
+				<div class="legenda">
+					<p>Estudante da ESPM de Sistema de Informação - 3° semestre, 20 anos</p>
+					<p>Mogi das Cruzes - SP</p>
+				</div>
+				<div class="logos">
+					<a class="foto-logo" href="https://github.com/colmeal"><img src="static/img/github.png" alt="GitHub"></a>
+					<a class="foto-logo" href="https://www.linkedin.com/in/mateus-carnevale-colmeal-579690303/"><img src="static/img/linkedin.png" alt="LinkedIn"></a>
 				</div>
 			</div>
 		</div>
