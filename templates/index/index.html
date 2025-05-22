@@ -2,9 +2,41 @@
 
 {% block body %}
 
+<style>
+.feature-card {
+    background: rgba(169, 214, 229, 0.1);
+    border: 1px solid rgba(169, 214, 229, 0.25);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.feature-card:hover {
+	background: linear-gradient(135deg, var(--ocean-blue-1), var(--aqua-blue-1));
+	transform: translateY(-2px);
+	box-shadow: 0 8px 25px rgba(20, 96, 139, 0.4);
+}
+
+.feature-card i {
+    font-size: 2.5rem;
+    color: var(--aqua-blue-2);
+    margin-bottom: 15px;
+}
+
+.instrucoes{
+	background: rgba(169, 214, 229, 0.1);
+	border-radius: 20px;
+	padding: 20px;
+	text-align: center;
+	transition: all 0.3s ease;
+}
+
+</style>
+
 <div class="container-fluid">
 
-	<h1 style="text-align: center; font-weight: bold; margin: 10px;">
+	<h1 style="text-align: center; font-weight: bold; margin: 10px; font-size: 3rem;">
 		DASM - Data Analysis for Scheduled Maintenance
 	</h1>
 
@@ -43,10 +75,10 @@
 	</div>
 
 
-	<div class="card">
-		<div class="card-body" style="padding: 60px 40;">
+	<div class="card instrucoes" style="margin: 80px;">
+		<div class="card-body" style="padding: 40px;">
 			<h2 style="text-align: medium;"> Como Funciona? </h2>
-		<p>
+		<p style="font-weight: lighter;">
 				O DASM utiliza algoritmos de aprendizado de máquina para analisar dados históricos e prever falhas
 				potenciais. Ele também permite o agendamento de manutenções com base em dados em tempo real, garantindo que os
 				equipamentos estejam sempre em boas condições de funcionamento.
@@ -72,6 +104,38 @@
 			</p>
 		</div>
 	</div>
+
+	<div id="funcionalidades" class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-5">
+				Benefícios 
+			</h2>
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="feature-card">
+                        <i class="fas fa-tasks"></i>
+                        <h3>Gestão de Tarefas</h3>
+                        <p>Organize e acompanhe suas tarefas com facilidade, mantendo tudo sob controle.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="feature-card">
+                        <i class="fas fa-users"></i>
+                        <h3>Colaboração em Equipe</h3>
+                        <p>Conecte sua equipe em tempo real para uma comunicação eficiente.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="feature-card">
+                        <i class="fas fa-chart-line"></i>
+                        <h3>Análise de Progresso</h3>
+                        <p>Monitore o desempenho dos seus projetos com relatórios detalhados.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 <script type="text/javascript">

@@ -5,6 +5,19 @@ img {
 html, body {
 	/* Para fazer o rodapé ficar sempre na parte inferior da página ;) */
 	min-height: 100vh;
+	background: linear-gradient(45deg, var(--cor-1), var(--cor-2), var(--cor-3), var(--cor-4));
+
+}
+
+:root {
+	--cor-1: #012a4a;
+	--cor-2: #013a63;
+	--cor-3: #01497c;
+	--cor-4: #014f86;
+	--cor-5: #2a6f97;
+	--cor-6: #2c7da0;
+	--cor-7: #2a9d8f;
+	--cor-8: #89c2d9;
 }
 
 .limitador {
@@ -21,23 +34,36 @@ html, body {
 }
 
 .navbar {
-	background-color: transparent;
-	max-height: 100px;
-	margin: 10px 20px 10px 20px;
-	border-radius: 20px;
+	background: linear-gradient(50deg, rgba(1, 66, 122, 0.3), rgba(42, 111, 151, 0.2));
+	backdrop-filter: blur(30px);
+	border-bottom: 1px solid rgba(169, 214, 229, 0.15);
+	box-shadow: 0 4px 12px rgba(1, 66, 122, 0.4);
+	border-radius: 80px;
+	margin: 20px;
 }
-.navbar a{
-	color: black;
+.navbar a {
+	color: var(--cor-8);
 	text-decoration: none;
+	font-size: 1.1rem;
 }
 
 .navbar-collapse {
 	justify-content: center;
 }
 
-h1{
-	color: #013a63;
+h1 {
+    color: var(--cor-8);
+    text-shadow: 0 4px 12px rgba(1, 66, 122, 0.4);
+    font-size: 2.8rem;
+    letter-spacing: 1.5px;
+    position: relative;
 }
+
+p, h2, h3, h4, h5, h6 {
+	text-shadow: 0 4px 12px rgba(1, 66, 122, 0.4);
+	color: var(--cor-8);
+}
+
 
 .conteudo {
 	/* Para fazer o rodapé ficar sempre na parte inferior da página ;) */
@@ -46,7 +72,6 @@ h1{
 
 .rodape {
 	text-align: center;
-	background-color: rgb(255, 255, 255);
 	padding: 2rem;
 }
 
@@ -54,3 +79,4 @@ h1{
 	color: white;
 	text-decoration: none;
 }
+

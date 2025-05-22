@@ -28,6 +28,14 @@ def contratar():
 def login():
     return render_template('index/login.html', titulo='Login')
 
+@app.get('/dashboard')
+def dashboard():
+    return render_template('index/dashboard.html', titulo='Dashboard')
+
+@app.get('/registrar')
+def registrar():
+    return render_template('index/registrar.html', titulo='Cadastro')
+
 @app.route("/obterDadosSemana")
 def obterDadosSemana():
     #data_final = request.args['data']
