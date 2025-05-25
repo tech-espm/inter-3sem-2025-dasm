@@ -34,7 +34,7 @@ html, body {
 }
 
 .navbar {
-	background: linear-gradient(50deg, rgba(1, 66, 122, 0.3), rgba(42, 111, 151, 0.2));
+	background: linear-gradient(50deg, rgba(4, 41, 74, 0.47), rgba(42, 111, 151, 0.489));
 	backdrop-filter: blur(30px);
 	border-bottom: 1px solid rgba(169, 214, 229, 0.15);
 	box-shadow: 0 4px 12px rgba(1, 66, 122, 0.4);

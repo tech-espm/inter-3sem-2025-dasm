@@ -3,6 +3,33 @@
 {% block body %}
 
 <style>
+.container-fluid h2,
+.card h2,
+#funcionalidades h2 {
+  position: relative;
+  display: block;
+  text-align: center;
+  padding-bottom: 8px;
+}
+.container-fluid h2::after,
+.card h2::after,
+#funcionalidades h2::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%); /* Centraliza a linha */
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #4a90e2, #14608b);
+  transition: width 0.3s ease;
+}
+.container-fluid h2:hover::after,
+.card h2:hover::after,
+#funcionalidades h2:hover::after {
+  width: 50%; /* Ajuste a largura desejada */
+}
+
 .feature-card {
     background: rgba(169, 214, 229, 0.1);
     border: 1px solid rgba(169, 214, 229, 0.25);
@@ -20,7 +47,7 @@
 
 .feature-card i {
     font-size: 2.5rem;
-    color: var(--aqua-blue-2);
+    color: var(--cor-8);
     margin-bottom: 15px;
 }
 
@@ -30,6 +57,11 @@
 	padding: 20px;
 	text-align: center;
 	transition: all 0.3s ease;
+}
+
+.instrucoes:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 8px 25px rgba(20, 96, 139, 0.4);
 }
 
 </style>
@@ -44,7 +76,7 @@
 
 	<div class="row">
 		<div class="col-sm-6" style="padding: 60px; justify-items: center;">
-			<h3>O que é o DASM?</h3>
+			<h2 style="font-weight: bold;">O que é o DASM?</h2>
 			<p>
 				O DASM é um sistema de análise de dados para manutenções programadas, que visa otimizar o processo de
 				manutenção e garantir a segurança e eficiência dos equipamentos.
@@ -77,7 +109,7 @@
 
 	<div class="card instrucoes" style="margin: 80px;">
 		<div class="card-body" style="padding: 40px;">
-			<h2 style="text-align: medium;"> Como Funciona? </h2>
+			<h2 style="font-weight: bold;"> Como Funciona? </h2>
 		<p style="font-weight: lighter;">
 				O DASM utiliza algoritmos de aprendizado de máquina para analisar dados históricos e prever falhas
 				potenciais. Ele também permite o agendamento de manutenções com base em dados em tempo real, garantindo que os
@@ -93,7 +125,7 @@
 			<img src="/static/img/sensor_presenca.png" class="img-fluid" alt="Sensor de presença" style="padding: 20px;">
 		</div>
 		<div class="col-sm-6" style="padding: 60px 30px;">
-			<h2>Sobre o sensor</h2>
+			<h2 style="font-weight: bold;">Sobre o sensor</h2>
 			<p style="font-weight: lighter;">
 				PRESENCE DETECTOR HPD2 IP
 			</p>
@@ -107,27 +139,27 @@
 
 	<div id="funcionalidades" class="py-5">
         <div class="container">
-            <h2 class="text-center mb-5">
+            <h2 class="text-center mb-5" style="font-weight: bold;">
 				Benefícios 
 			</h2>
             <div class="row">
                 <div class="col-md-4 mb-4">
                     <div class="feature-card">
-                        <i class="fas fa-tasks"></i>
+                        <i class="fas fa-tasks mb-3 icon"></i>
                         <h3>Gestão de Tarefas</h3>
                         <p>Organize e acompanhe suas tarefas com facilidade, mantendo tudo sob controle.</p>
                     </div>
                 </div>
                 <div class="col-md-4 mb-4">
                     <div class="feature-card">
-                        <i class="fas fa-users"></i>
+                        <i class="fas fa-users mb-3 icon"></i>
                         <h3>Colaboração em Equipe</h3>
                         <p>Conecte sua equipe em tempo real para uma comunicação eficiente.</p>
                     </div>
                 </div>
                 <div class="col-md-4 mb-4">
                     <div class="feature-card">
-                        <i class="fas fa-chart-line"></i>
+                        <i class="fas fa-chart-line mb-3 icon"></i>
                         <h3>Análise de Progresso</h3>
                         <p>Monitore o desempenho dos seus projetos com relatórios detalhados.</p>
                     </div>
