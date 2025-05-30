@@ -45,3 +45,14 @@ from passagem
 where data between '2025-03-03 00:00:00' and '2025-03-14 23:59:59'
 and id_sensor = 2
 group by dia, hora;
+
+--   ////////////////////////
+-- // tabela não contratante //
+-- //////////////////////// 
+
+CREATE TABLE IF NOT EXISTS contratante(
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nome VARCHAR(100) NOT NULL,
+  email VARCHAR(30) NOT NULL,
+  cargo VARCHAR(25) NOT NULL
+);

@@ -184,3 +184,54 @@ def listarConsolidadoMensalPresenca(data_inicial, data_final):
 			})
 
 		return lista
+
+# ------------------------------
+#   CRUD NÃO - CONTRATANTES
+#-------------------------------
+
+def listarContratantes():
+	with Session(engine) as sessao:
+		resultado = sessao.execute(text("""
+                SELECT id, nome, email, cargo FROM contratante ORDER BY nome """))
+		contratantes = []
+		for id, nome, email, cargo in resultado:
+			contratantes.append({
+				'id': id,
+				'nome': nome,
+				'email': email,
+				'cargo': cargo})
+	return contratantes
+
+def obterContratante(id):
+	with Session(engine) as sessao:
+		resultado = sessao.execute(text("""
+			SELECT id, nome, email, cargo FROM contratante WHERE id = :id"""), {'id': id}).first()
+		if resultado:
+			return {
+			'id': resultado.id,
+			'nome': resultado.nome,
+			'email': resultado.email,
+			'cargo': resultado.cargo
+			}
+	return None
+
+def criarContratante(nome, email, cargo):
+	with Session(engine) as sessao, sessao.begin():
+		sessao.execute(text("""
+            INSERT INTO contratante(nome, email, cargo)
+            VALUES (:nome, :email, :cargo)"""),
+			{'nome': nome, 'email': email, 'cargo': cargo})
+  
+def atualizarContratante(id, nome, email, cargo):
+	with Session(engine) as sessao, sessao.begin():
+		sessao.execute(text("""
+			UPDATE contratante
+			SET nome = :nome, email = :email, cargo = :cargo
+			WHERE id = :id"""),
+			{'id': id, 'nome': nome, 'email': email, 'cargo': cargo})
+  
+def deletarContratante(id):
+    with Session(engine) as sessao, sessao.begin():
+        sessao.execute(text(""" DELETE FROM contratante WHERE id = :id """), {'id': id})
+
+        

@@ -137,5 +137,56 @@ def criar():
     print(dados.get('nome'))
     return Response(status=204)
 
+# if __name__ == '__main__':
+#     app.run(host=config.host, port=config.port, debug=True)
+
+
+# ROTAS - CONTRATANTE
+
+@app.route('/api/contratantes', methods=['GET'])
+def api_listar_contratantes():
+    contratantes = banco.listarContratantes()
+    return json.jsonify(contratantes)
+
+@app.route('/api/contratantes/<int:id>', methods=['GET'])
+def api_obter_contratante(id):
+    contratante = banco.obterContratante(id)
+    if contratante:
+        return json.jsonify(contratante)
+    return json.jsonify({"erro": "Contratante não encontrado"}), 404
+
+@app.route('/api/contratantes', methods=['POST'])
+def api_criar_contratante():
+    dados = request.get_json()
+    nome = dados.get('nome')
+    email = dados.get('email')
+    cargo = dados.get('cargo')
+    
+    if not nome or not email or not cargo:
+        return json.jsonify({"erro": "Dados incompletos"}), 400
+
+    banco.criarContratante(nome, email, cargo)
+    return json.jsonify({"mensagem": "Contratante criado com sucesso"}), 201
+
+@app.route('/api/contratantes/<int:id>', methods=['PUT'])
+def api_atualizar_contratante(id):
+    dados = request.get_json()
+    nome = dados.get('nome')
+    email = dados.get('email')
+    cargo = dados.get('cargo')
+    
+    if not nome or not email or not cargo:
+        return json.jsonify({"erro": "Dados incompletos"}), 400
+
+    banco.atualizarContratante(id, nome, email, cargo)
+    return json.jsonify({"mensagem": "Contratante atualizado com sucesso"})
+
+@app.route('/api/contratantes/<int:id>', methods=['DELETE'])
+def api_deletar_contratante(id):
+    banco.deletarContratante(id)
+    return json.jsonify({"mensagem": "Contratante removido com sucesso"})
+
+
+# dps de tudo
 if __name__ == '__main__':
     app.run(host=config.host, port=config.port, debug=True)
