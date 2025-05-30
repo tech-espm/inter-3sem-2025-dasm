@@ -25,12 +25,27 @@
 		flex-direction: column;
 		align-items: center;
 		max-width: 450px;
+		margin-left: 80px;
+
 	}
 	.fotoIntegrante {
-		width: 100%;
-		max-width: 180px;
+		width: 130px;
+		height: 135px;
+		object-fit: cover;
 		border-radius: 20px;
 		margin-bottom: 10px;
+	}
+	.cardIntegrante2 {
+		background: linear-gradient(135deg, var(--cor-3), var(--cor-6));
+		border-radius: 70px 70px 70px 0px;
+		padding: 20px 0px;
+		text-align: center;
+		min-height: 100%;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		max-width: 450px;
+		margin-right: 0px;
 	}
 
 	.logos {
@@ -67,30 +82,23 @@
 
 	<h2 style="text-align: center; font-weight: bold; margin: 20px; font-size: 2rem;"> Conheça Nossa Equipe </h2>
 
+
 		<div class="row">
 			<div class="col-md-6 mb-4">
 				<!-- Bianca -->
 				<div class="cardIntegrante">
-					<div class="row">
-						<div class="col-md-6">
-							<img class="fotoIntegrante" src="static/img/bianca.jpeg" alt="Foto da integrante Bianca.">
-							<h2 class="tituloSecao">Bianca C. Fagundes de Araújo</h2>	
-							<p>Maceió - AL</p>
-						</div>
-						<div class="col-md-6">
-							<div class="legenda">
-								<p>Estudante da ESPM de Sistema de Informação - 3° semestre, 20 anos</p>
-							
-							</div>
-							<div class="logos">
-								<a class="foto-logo" href="https://github.com/araujozb"><i class="fab fa-github"></i></a>
-								<a class="foto-logo" href="https://www.linkedin.com/in/bianca-araújo-b89803229/"><i class="fab fa-linkedin"></i></a>
-							</div>
-						</div>
+					<img class="fotoIntegrante" src="static/img/bianca.jpeg" alt="Foto da integrante Bianca.">
+					<h2 class="tituloSecao">Bianca C. Fagundes de Araújo</h2>
+					<div class="legenda">
+						<p>Estudante da ESPM de Sistema de Informação - 3° semestre, 20 anos</p>
+						<p>Maceió - AL</p>
+					</div>
+					<div class="logos">
+						<a class="foto-logo" href="https://github.com/araujozb"><i class="fab fa-github"></i></a>
+						<a class="foto-logo" href="https://www.linkedin.com/in/bianca-araújo-b89803229/"><i class="fab fa-linkedin"></i></a>
 					</div>
 				</div>
 			</div>
-
 			<div class="col-md-6 mb-4">
 				<!-- Luzivania -->
 				<div class="cardIntegrante">
@@ -142,15 +150,16 @@
 			</div>
 		</div>	
 		<!-- Mateus -->
-		<div class="cardIntegrante">
-			<img class="fotoIntegrante" src="static/img/mateus.jpeg" alt="Foto do integrante Mateus.">
-			<h2 class="tituloSecao">Mateus Carnevale Colmeal</h2>
-			<div class="legenda">
-				<p>Estudante da ESPM de Sistema de Informação - 3° semestre, 20 anos</p>
-				<p>Mogi das Cruzes - SP</p>
-			</div>
-			<div class="logos">
-				<a class="foto-logo" href="https://github.com/colmeal"><i class="fab fa-github"></i></a>
+		<div class="row justify-content-center mb-4">
+			<div class="cardIntegrante2">
+				<img class="fotoIntegrante" src="static/img/mateus.jpeg" alt="Foto do integrante Mateus.">
+				<h2 class="tituloSecao">Mateus Carnevale Colmeal</h2>
+				<div class="legenda">
+					<p>Estudante da ESPM de Sistema de Informação - 3° semestre, 20 anos</p>
+					<p>Mogi das Cruzes - SP</p>
+				</div>
+				<div class="logos">
+					<a class="foto-logo" href="https://github.com/colmeal"><i class="fab fa-github"></i></a>
 				<a class="foto-logo" href="https://www.linkedin.com/in/mateus-carnevale-colmeal-579690303/"><i class="fab fa-linkedin"></i></a>
 			</div>
 		</div>
