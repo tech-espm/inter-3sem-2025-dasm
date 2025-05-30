@@ -26,20 +26,6 @@
                                     <input id="data_final" name="data_final" class="form-control" type="date" value="{{data_final}}" />
                                 </div>
                             </div>
-                            <div class="col-sm-4">
-                                <div class="form-group">
-                                    <label for="dia_semana">Dia da Semana</label>
-                                    <select id="dia_semana" name="dia_semana" class="form-control">
-                                        <option value="1">Domingo</option>
-                                        <option value="2">Segunda-feira</option>
-                                        <option value="3">Terça-feira</option>
-                                        <option value="4">Quarta-feira</option>
-                                        <option value="5">Quinta-feira</option>
-                                        <option value="6">Sexta-feira</option>
-                                        <option value="7">Sábado</option>
-                                    </select>
-                                </div>
-                            </div>
                         </div>
                         <button type="submit" class="btn btn-primary">Listar</button>
                     </form>
@@ -59,7 +45,7 @@
     <div class="card shadow my-4">
         <div class="card-body">
 			<h1 style="text-align: center; font-size: 1.5rem;">Consolidado pelo Dia da Semana Selecionado</h1>
-			<div id="div-heatmap-dia-semana"></div>
+			<div id="div-heatmap-mensal-presenca" style="overflow-x: auto;"></div>
 		</div>
     </div>
 
@@ -121,12 +107,22 @@
         }
     });
 
-	function gerarHeatmapDiaSemana(dados) {
+	function gerarHeatmapMensalPresenca(dados) {
 		const colunas = ["Total"];
+
+		let ultimoDia = null;
+		for (let i = 0; i < dados.length; i++) {
+			if (!ultimoDia || ultimoDia !== dados[i].dia) {
+				ultimoDia = dados[i].dia;
+				dados[i].total = 0;
+			} else {
+				dados[i].total = Math.max(0, dados[i - 1].total + dados[i].total_entrada - dados[i].total_saida);
+			}
+		}
 
 		let menor = dados[0].total;
 		let maior = dados[0].total;
-		let ultimoDia = dados[0].dia;
+		ultimoDia = dados[0].dia;
 		colunas.push(ultimoDia);
 		for (let i = 1; i < dados.length; i++) {
 			const dado = dados[i];
@@ -153,6 +149,8 @@
 
 		let delta = (maior - menor) || 1;
 
+		// @@@ Filtro por horário comercial
+		//for (let h = 8; h <= 18; h++) {
 		for (let h = 0; h <= 23; h++) {
 			html.push(`<tr><td>${h}:00</td>`);
 			for (let d = 1; d < colunas.length; d++) {
@@ -171,7 +169,7 @@
 		}
 
 		html.push(`</tbody></table>`);
-		document.getElementById("div-heatmap-dia-semana").innerHTML = html.join('');
+		document.getElementById("div-heatmap-mensal-presenca").innerHTML = html.join('');
 	}
 
 	async function atualizarDados() {
@@ -180,19 +178,18 @@
         try {
             let data_inicial = document.getElementById("data_inicial").value;
             let data_final = document.getElementById("data_final").value;
-            let dia_semana = document.getElementById("dia_semana").value;
-            let response = await fetch(`/obterDadosMensalDiaSemana?data_inicial=${data_inicial}&data_final=${data_final}&dia_semana=${dia_semana}`);
+            let response = await fetch(`/obterDadosMensalPresenca?data_inicial=${data_inicial}&data_final=${data_final}`);
 
             if (response.ok) {
                 Swal.close();
 
                 const obj = await response.json();
-                if (!obj || !obj.mensal_dia_semana || !obj.mensal_dia_semana.length) {
+                if (!obj || !obj.mensal_presenca || !obj.mensal_presenca.length) {
                     Swal.fire("Erro", "Sem dados no período especificado!", "error");
                     return;
                 }
 
-				gerarHeatmapDiaSemana(obj.mensal_dia_semana);
+				gerarHeatmapMensalPresenca(obj.mensal_presenca);
             } else {
                 await exibirErro(response);
             }

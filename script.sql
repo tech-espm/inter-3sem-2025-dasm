@@ -44,7 +44,8 @@ select date_format(date(data), '%d/%m/%Y') dia, extract(hour from data) hora, su
 from passagem
 where data between '2025-03-03 00:00:00' and '2025-03-14 23:59:59'
 and id_sensor = 2
-group by dia, hora;
+group by dia, hora
+order by dia, hora;
 
 --   ////////////////////////
 -- // tabela não contratante //

@@ -90,9 +90,8 @@ def obterDadosMensalDiaSemana():
 def obterDadosMensalPresenca():
     data_inicial = request.args.get('data_inicial')
     data_final = request.args.get('data_final')
-    dia_semana = request.args.get('dia_semana')
 
-    if not data_inicial or not data_final or not dia_semana:
+    if not data_inicial or not data_final:
         return json.jsonify({"erro": "Parâmetros obrigatórios não informados."}), 400
 
     # Obter o maior id do banco
@@ -126,7 +125,7 @@ def mensalDiaSemana():
 
 @app.get('/mensalPresenca')
 def mensalPresenca():
-    data_inicial = (datetime.today() + timedelta(days=-29)).strftime('%Y-%m-%d')
+    data_inicial = (datetime.today() + timedelta(days=-19)).strftime('%Y-%m-%d')
     data_final = datetime.today().strftime('%Y-%m-%d')
     return render_template('index/mensalPresenca.html', titulo='Presença por Dia', data_inicial=data_inicial, data_final=data_final)
 

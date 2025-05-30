@@ -166,11 +166,12 @@ def listarConsolidadoMensalPresenca(data_inicial, data_final):
 		# https://docs.sqlalchemy.org/en/14/orm/session_api.html#sqlalchemy.orm.Session.execute
 		# https://docs.sqlalchemy.org/en/14/core/connections.html#sqlalchemy.engine.Result
 		registros = sessao.execute(text("""
-		select date_format(date(data), '%d/%m/%Y') dia, extract(hour from data) hora, cast(sum(entrada) as signed) total_entrada, cast(sum(saida) as signed) total_saida
+		select date_format(date(data), '%d/%m') dia, extract(hour from data) hora, cast(sum(entrada) as signed) total_entrada, cast(sum(saida) as signed) total_saida
 		from passagem
 		where data between :data_inicial and :data_final
 		and id_sensor = 2
-		group by dia, hora;
+		group by dia, hora
+		order by dia, hora;
 		"""), parametros)
 
 		lista = []
