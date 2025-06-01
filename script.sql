@@ -47,14 +47,34 @@ and id_sensor = 2
 group by dia, hora
 order by dia, hora;
 
---   ////////////////////////
--- // tabela não contratante //
--- //////////////////////// 
 
+-- tabela contratante
 CREATE TABLE IF NOT EXISTS contratante(
   id INT AUTO_INCREMENT PRIMARY KEY,
   nome VARCHAR(100) NOT NULL,
   email VARCHAR(30) NOT NULL,
   empresa VARCHAR(100) NOT NULL,
   senha VARCHAR(30) NOT NULL
+);
+
+-- tabela de evento
+CREATE TABLE IF NOT EXISTS evento(
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  titulo VARCHAR(100) NOT NULL,
+  descricao TEXT,
+  data_evento DATETIME NOT NULL,
+  id_responsavel INT,
+  FOREIGN KEY (id_responsavel) REFERENCES contratante(id)
+);
+
+-- table manutenção
+CREATE TABLE manutencao (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  descricao TEXT,
+  data_manutencao DATETIME NOT NULL,
+  responsavel VARCHAR(100) NOT NULL,
+  relacao_evento ENUM('antes', 'depois'),
+  nivel ENUM('básica/limpeza', 'preventiva', 'pesada'),
+  id_evento INT,
+  FOREIGN KEY (id_evento) REFERENCES evento(id)
 );
