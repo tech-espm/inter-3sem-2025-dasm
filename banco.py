@@ -193,43 +193,43 @@ def listarConsolidadoMensalPresenca(data_inicial, data_final):
 def listarContratantes():
 	with Session(engine) as sessao:
 		resultado = sessao.execute(text("""
-                SELECT id, nome, email, cargo FROM contratante ORDER BY nome """))
+                SELECT id, nome, email, empresa FROM contratante ORDER BY nome """))
 		contratantes = []
-		for id, nome, email, cargo in resultado:
+		for id, nome, email, empresa in resultado:
 			contratantes.append({
 				'id': id,
 				'nome': nome,
 				'email': email,
-				'cargo': cargo})
+				'empresa': empresa})
 	return contratantes
 
 def obterContratante(id):
 	with Session(engine) as sessao:
 		resultado = sessao.execute(text("""
-			SELECT id, nome, email, cargo FROM contratante WHERE id = :id"""), {'id': id}).first()
+			SELECT id, nome, email, empresa FROM contratante WHERE id = :id"""), {'id': id}).first()
 		if resultado:
 			return {
 			'id': resultado.id,
 			'nome': resultado.nome,
 			'email': resultado.email,
-			'cargo': resultado.cargo
+			'empresa': resultado.empresa
 			}
 	return None
 
-def criarContratante(nome, email, cargo):
+def criarContratante(nome, email, empresa, senha):
 	with Session(engine) as sessao, sessao.begin():
 		sessao.execute(text("""
-            INSERT INTO contratante(nome, email, cargo)
-            VALUES (:nome, :email, :cargo)"""),
-			{'nome': nome, 'email': email, 'cargo': cargo})
+            INSERT INTO contratante(nome, email, empresa, senha)
+            VALUES (:nome, :email, :empresa, :senha)"""),
+			{'nome': nome, 'email': email, 'empresa': empresa, 'senha': senha})
   
-def atualizarContratante(id, nome, email, cargo):
+def atualizarContratante(id, nome, email, empresa):
 	with Session(engine) as sessao, sessao.begin():
 		sessao.execute(text("""
 			UPDATE contratante
-			SET nome = :nome, email = :email, cargo = :cargo
+			SET nome = :nome, email = :email, empresa = :empresa
 			WHERE id = :id"""),
-			{'id': id, 'nome': nome, 'email': email, 'cargo': cargo})
+			{'id': id, 'nome': nome, 'email': email, 'empresa': empresa})
   
 def deletarContratante(id):
     with Session(engine) as sessao, sessao.begin():

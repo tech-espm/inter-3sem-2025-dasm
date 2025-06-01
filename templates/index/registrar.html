@@ -178,51 +178,108 @@
         }
     }
 </style>
-
-<div class="animated-bubbles">
+<body>
+    <div class="animated-bubbles">
     <!-- Bolhas animadas de fundo -->
-    <div class="bubble" style="left: 10%; width: 120px; height: 120px; animation-delay: 0s"></div>
-    <div class="bubble" style="left: 30%; width: 80px; height: 80px; animation-delay: 4s"></div>
-    <div class="bubble" style="left: 70%; width: 150px; height: 150px; animation-delay: 8s"></div>
-</div>
+        <div class="bubble" style="left: 10%; width: 120px; height: 120px; animation-delay: 0s"></div>
+        <div class="bubble" style="left: 30%; width: 80px; height: 80px; animation-delay: 4s"></div>
+        <div class="bubble" style="left: 70%; width: 150px; height: 150px; animation-delay: 8s"></div>
+    </div>
 
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-md-6 offset-md-3">
-            <div class="glass-container">
-                <h1 style="text-align: center; margin: 20px 0;">
-                    Cadastro
-                    <i class="fas fa-user-plus" style="color: var(--sky-blue-1);"></i>
-                </h1>
-                <form style="justify-content: center; display: flex; flex-direction: column;">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <div class="glass-container">
+                    <h1 style="text-align: center; margin: 20px 0;">
+                        Cadastro
+                        <i class="fas fa-user-plus" style="color: var(--sky-blue-1);"></i>
+                    </h1>
+
+                    <form id="form-registrar" style="justify-content: center; display: flex; flex-direction: column;">
                     
-                    <div class="form-group" style="margin: 10px;">
-                        <label for="username">Usuário</label> <br>
-                        <input type="text" class="form-control" id="username" placeholder="ex: usuario@empresa.com">
-                    </div>
-                    <div class="form-group" style="margin: 10px;">
-                        <label for="password">Senha</label> <br> 
-                        <input type="password" class="form-control" id="password" placeholder="••••••••">
-                    </div>
-                    <div class="form-group" style="margin: 10px;">
-                        <label for="password">Confirmação da senha</label> <br>
-                        <input type="password" class="form-control" id="password" placeholder="••••••••">
-                    </div>
-                    <button type="submit" class="btn btn-primary" style="color: white;">Cadastrar</button>
+                        <div class="form-group" style="margin: 10px;">
+                            <label for="name">Name</label> <br>
+                            <input type="text" class="form-control" id="name" placeholder="Seu Nome">
+                        </div>
+                        <div class="form-group" style="margin: 10px;">
+                            <label for="email">Email</label> <br>
+                            <input type="email" class="form-control" id="email" placeholder="ex: usuario@empresa.com">
+                        </div>
+                        <div class="form-group" style="margin: 10px;">
+                            <label for="company">Company</label> <br>
+                            <input type="text" class="form-control" id="company" placeholder="Nome da Empresa">
+                        </div>
+                        <div class="form-group" style="margin: 10px;">
+                            <label for="password">Password</label> <br> 
+                            <input type="password" class="form-control" id="password" placeholder="••••••••">
+                        </div>
+                        <div class="form-group" style="margin: 10px;">
+                            <label for="password">Confirm your password</label> <br>
+                            <input type="password" class="form-control" id="confirmPassword" placeholder="••••••••">
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="color: white;">Cadastrar</button>
                     
-                    <div class="social-login">
+                        <div class="social-login">
                         
-                    </div>
+                        </div>
                     
-                    <div class="links-section">
-                        <p style="text-align: center; margin-top: 25px; color: var(--aqua-blue-2)">
-                            Já está cadastrada? <a href="/login">Login</a>
-                        </p>
-                    </div>
-                </form>
+                        <div class="links-section">
+                            <p style="text-align: center; margin-top: 25px; color: var(--aqua-blue-2)">
+                                Já está cadastrado(a)? <a href="/login">Login</a>
+                            </p>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+    <script>
+    document.getElementById("form-registrar").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const nome = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const company = document.getElementById("company").value.trim();
+    const password= document.getElementById("password").value;
+    const confirmPassword = document.getElementById("confirmPassword").value;
+
+    if (!nome || !email || !company || !password || !confirmPassword) {
+      alert("Por favor, preencha todos os campos.");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      alert("As senhas não coincidem.");
+      return;
+    }
+
+    try {
+      const resposta = await fetch('/api/contratantes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            nome,
+            email,
+            empresa: company,  //alterei o campo no back
+            senha: password
+        })
+      });
+
+      const json = await resposta.json();
+
+      if (resposta.ok) {
+        alert(json.mensagem);
+        document.getElementById("form-registrar").reset();
+      } else {
+        alert(json.erro || "Erro ao cadastrar.");
+      }
+
+    } catch (erro) {
+      alert("Erro na requisição: " + erro);
+    }
+  });
+</script>
+</body>

@@ -159,12 +159,13 @@ def api_criar_contratante():
     dados = request.get_json()
     nome = dados.get('nome')
     email = dados.get('email')
-    cargo = dados.get('cargo')
+    empresa = dados.get('empresa')
+    senha = dados.get('senha')
     
-    if not nome or not email or not cargo:
+    if not nome or not email or not empresa:
         return json.jsonify({"erro": "Dados incompletos"}), 400
 
-    banco.criarContratante(nome, email, cargo)
+    banco.criarContratante(nome, email, empresa, senha)
     return json.jsonify({"mensagem": "Contratante criado com sucesso"}), 201
 
 @app.route('/api/contratantes/<int:id>', methods=['PUT'])
@@ -172,12 +173,13 @@ def api_atualizar_contratante(id):
     dados = request.get_json()
     nome = dados.get('nome')
     email = dados.get('email')
-    cargo = dados.get('cargo')
+    empresa = dados.get('empresa')
+    senha = dados.get('senha')
     
-    if not nome or not email or not cargo:
+    if not nome or not email or not empresa:
         return json.jsonify({"erro": "Dados incompletos"}), 400
 
-    banco.atualizarContratante(id, nome, email, cargo)
+    banco.atualizarContratante(id, nome, email, empresa)
     return json.jsonify({"mensagem": "Contratante atualizado com sucesso"})
 
 @app.route('/api/contratantes/<int:id>', methods=['DELETE'])
