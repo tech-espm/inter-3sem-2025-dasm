@@ -1,14 +1,12 @@
 CREATE DATABASE IF NOT EXISTS dasm DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_general_ci;
 
--- Todos os deltas estão em segundos
-
 USE dasm;
 
 -- topic v3/espm/devices/passage01/up
 -- topic v3/espm/devices/passage02/up
 -- { "end_device_ids": { "device_id": "passage01" }, "uplink_message": { "rx_metadata": [{ "timestamp": 2040934975 }], "decoded_payload": { "battery": 0, "period_in": 0, "period_out": 0 } } }
 CREATE TABLE passagem (
-  id bigint NOT NULL,
+  id bigint NOT NULL AUTO_INCREMENT,
   data datetime NOT NULL,
   id_sensor tinyint NOT NULL,
   delta int NOT NULL,
@@ -19,6 +17,7 @@ CREATE TABLE passagem (
   KEY passagem_data_id_sensor (data, id_sensor),
   KEY passagem_id_sensor (id_sensor)
 );
+
 
 -- Query de consolidação por dia da semana (1 = domingo, 2 = segunda...) e por hora, para o heatmap com 7 colunas e 24 linhas
 select dayofweek(data) dia_semana, extract(hour from data) hora, sum(entrada + saida) total
@@ -52,9 +51,9 @@ order by dia, hora;
 CREATE TABLE IF NOT EXISTS contratante(
   id INT AUTO_INCREMENT PRIMARY KEY,
   nome VARCHAR(100) NOT NULL,
-  email VARCHAR(30) NOT NULL,
+  email VARCHAR(100) NOT NULL,
   empresa VARCHAR(100) NOT NULL,
-  senha VARCHAR(30) NOT NULL
+  senha VARCHAR(255) NOT NULL
 );
 
 -- tabela de evento
@@ -74,7 +73,7 @@ CREATE TABLE manutencao (
   data_manutencao DATETIME NOT NULL,
   responsavel VARCHAR(100) NOT NULL,
   relacao_evento ENUM('antes', 'depois'),
-  nivel ENUM('básica/limpeza', 'preventiva', 'pesada'),
+  nivel ENUM('basica', 'limpeza', 'preventiva', 'pesada'),
   id_evento INT,
   FOREIGN KEY (id_evento) REFERENCES evento(id)
 );
