@@ -3,33 +3,6 @@
 {% block body %}
 
 <style>
-.container-fluid h2,
-.card h2,
-#funcionalidades h2 {
-  position: relative;
-  display: block;
-  text-align: center;
-  padding-bottom: 8px;
-}
-.container-fluid h2::after,
-.card h2::after,
-#funcionalidades h2::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%); /* Centraliza a linha */
-  width: 100%;
-  height: 2px;
-  background: linear-gradient(90deg, #4a90e2, #14608b);
-  transition: width 0.3s ease;
-}
-.container-fluid h2:hover::after,
-.card h2:hover::after,
-#funcionalidades h2:hover::after {
-  width: 100%; /* Ajuste a largura desejada */
-}
-
 .feature-card {
     background: rgba(169, 214, 229, 0.1);
     border: 1px solid rgba(169, 214, 229, 0.25);
@@ -45,13 +18,13 @@
 	box-shadow: 0 8px 25px rgba(20, 96, 139, 0.4);
 }
 
-.feature-card i {
+.fas, .fab {
     font-size: 2.5rem;
     color: var(--cor-8);
     margin-bottom: 15px;
 }
 
-.instrucoes{
+.instrucoes {
 	background: rgba(169, 214, 229, 0.1);
 	border-radius: 20px;
 	padding: 20px;
@@ -74,7 +47,7 @@
 
 	<h2 style="text-align: center; font-size: medium;"> Manutenções para o Futuro </h2>
 
-	<div class="row">
+	<div class="row" style="align-items: center";>
 		<div class="col-sm-6" style="padding: 60px;">
 			<h2 style="font-weight: bold;">O que é o DASM?</h2>
 			<p>
@@ -109,7 +82,7 @@
 
 	<div class="card instrucoes" style="margin: 80px 0px;">
 		<div class="card-body" style="padding: 40px;">
-			<h2 style="font-weight: bold;"> Como Funciona? </h2>
+			<h2 style="font-weight: bold;"> <i class="fas fa-gear"></i> Como Funciona? </h2>
 		<p style="font-weight: lighter;">
 				O DASM utiliza algoritmos de aprendizado de máquina para analisar dados históricos e prever falhas
 				potenciais. Ele também permite o agendamento de manutenções com base em dados em tempo real, garantindo que os
@@ -125,7 +98,7 @@
 			<img src="/static/img/sensor_presenca.png" class="img-fluid" alt="Sensor de presença" style="padding: 20px;">
 		</div>
 		<div class="col-sm-6" style="padding: 60px 30px;">
-			<h2 style="font-weight: bold;">Sobre o sensor</h2>
+			<h2 style="font-weight: bold;"> <i class="fas fa-satellite"></i> Sobre o sensor</h2>
 			<p style="font-weight: lighter;">
 				PRESENCE DETECTOR HPD2 IP
 			</p>
@@ -139,10 +112,8 @@
 
 	<div id="funcionalidades" class="py-5">
         <div class="container">
-            <h2 class="text-center mb-5" style="font-weight: bold;">
-				Benefícios 
-			</h2>
-            <div class="row">
+            <h2 class="text-center mb-5" style="font-weight: bold;"> <i class="fas fa-check-circle"></i> Benefícios </h2>
+            <div class="row" >
                 <div class="col-md-4 mb-4">
                     <div class="feature-card">
                         <i class="fas fa-tasks mb-3 icon"></i>
@@ -167,6 +138,69 @@
             </div>
         </div>
     </div>
+
+	<section class="py-5">
+		<h2 class="text-center mb-5">Tecnologias utilizadas</h2>
+		<div class="container">
+			<div class="row text-center">
+				<div class="col-md-4 mb-4">
+					<i class="fab fa-html5 mb-3 icon"></i>
+					<h3>HTML5</h3>
+					<p>Estrutura básica do site, garantindo uma base sólida e semântica.</p>
+				</div>
+				<div class="col-md-4 mb-4">
+					<i class="fab fa-css3 mb-3 icon"></i>
+					<h3>CSS3</h3>
+					<p>Estilização do site, proporcionando um design moderno e responsivo.</p>
+				</div>
+				<div class="col-md-4 mb-4">
+					<i class="fab fa-js-square mb-3 icon"></i>
+					<h3>JavaScript</h3>
+					<p>Interatividade e dinamismo, melhorando a experiência do usuário.</p>
+				</div>
+			</div>
+			<div class="row text-center">	
+				<div class="col-md-4 mb-4">
+					<i class="fab fa-flask mb-3 icon"></i>
+					<h3>Flask</h3>
+					<p>Framework Python utilizado para o desenvolvimento do backend do site.</p>
+				</div>
+				<div class="col-md-4 mb-4">
+					<i class="fab fa-docker mb-3 icon"></i>
+					<h3>Docker</h3>
+					<p>Containerização do aplicativo, garantindo portabilidade e escalabilidade.</p>
+				</div>
+				<div class="col-md-4 mb-4">
+					<i class="fab fa-github mb-3 icon"></i>
+					<h3>GitHub</h3>
+					<p>Controle de versão e colaboração no desenvolvimento do projeto.</p>
+				</div>
+			</div>
+			<div class="row text-center">
+				<div class="col-md-4 mb-4">
+					<i class="fas fa-chart-bar mb-3 icon"></i>
+					<h3>Gráficos</h3>
+					<p>Visualização de dados com gráficos interativos, facilitando a análise.</p>
+				</div>
+				<div class="col-md-4 mb-4">
+					<i class="fab fa-python mb-3 icon"></i>
+					<h3>Python</h3>
+					<p>Utilizado para o desenvolvimento do backend e análise de dados.</p>
+				</div>
+				<div class="col-md-4 mb-4">
+					<i class="fab fa-bootstrap mb-3 icon"></i>
+					<h3>Bootstrap</h3>
+					<p>Framework CSS utilizado para o design responsivo e moderno do site.</p>
+				</div>
+			</div>
+			<div class="row text-center">
+				<div class="col-md-4 mb-4">
+					<i class="fas fa-database mb-3 icon"></i>
+					<h3>Banco de Dados</h3>
+					<p>Armazenamento eficiente dos dados coletados pelos sensores.</p>
+				</div>
+			</div>
+	</section>
 
 </div>
 

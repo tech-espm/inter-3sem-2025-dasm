@@ -48,11 +48,6 @@ def index():
 def sobre():
     return render_template('index/sobre.html', titulo='Sobre Nós')
 
-@app.get('/homeC')
-def homeC():
-    hoje = datetime.today().strftime('%Y-%m-%d')
-    return render_template('index/homeC.html', titulo='Home', hoje=hoje)
-
 @app.get('/contratar')
 def contratar():
     return render_template('index/contratar.html', titulo='Contratar')

@@ -11,13 +11,16 @@ html, body {
 
 :root {
 	--cor-1: #012a4a;
-	--cor-2: #013a63;
-	--cor-3: #01497c;
-	--cor-4: #014f86;
-	--cor-5: #2a6f97;
-	--cor-6: #2c7da0;
-	--cor-7: #2a9d8f;
-	--cor-8: #89c2d9;
+    --cor-2: #013a63;
+    --cor-3: #01497c;
+    --cor-4: #014f86;
+    --cor-5: #2a6f97;
+    --cor-6: #2c7da0;
+    --cor-7: #468faf;
+    --cor-8: #61a5c2;
+    --cor-9: #89c2d9;
+    --cor-10: #a9d6e5;
+
 }
 
 .limitador {
@@ -42,7 +45,7 @@ html, body {
 	margin: 20px;
 }
 .navbar a {
-	color: var(--cor-8);
+	color: var(--cor-10);
 	text-decoration: none;
 	font-size: 1.1rem;
 }
@@ -52,7 +55,7 @@ html, body {
 }
 
 h1 {
-    color: var(--cor-8);
+    color: var(--cor-10);
     text-shadow: 0 4px 12px rgba(1, 66, 122, 0.4);
     font-size: 2.8rem;
     letter-spacing: 1.5px;
@@ -61,7 +64,7 @@ h1 {
 
 p, h2, h3, h4, h5, h6 {
 	text-shadow: 0 4px 12px rgba(1, 66, 122, 0.4);
-	color: var(--cor-8);
+	color: var(--cor-10);
 }
 
 
