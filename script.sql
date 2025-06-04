@@ -18,6 +18,14 @@ CREATE TABLE passagem (
   KEY passagem_id_sensor (id_sensor)
 );
 
+-- tabela pessoa
+CREATE TABLE IF NOT EXISTS pessoa (
+  id BIGINT NOT NULL AUTO_INCREMENT,
+  nome VARCHAR(100) NOT NULL,
+  email VARCHAR(100) NOT NULL,
+  PRIMARY KEY (id),
+  UNIQUE KEY pessoa_email (email)
+);
 
 -- Query de consolidação por dia da semana (1 = domingo, 2 = segunda...) e por hora, para o heatmap com 7 colunas e 24 linhas
 select dayofweek(data) dia_semana, extract(hour from data) hora, sum(entrada + saida) total
@@ -46,7 +54,6 @@ and id_sensor = 2
 group by dia, hora
 order by dia, hora;
 
-
 -- tabela contratante
 CREATE TABLE IF NOT EXISTS contratante(
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -67,7 +74,7 @@ CREATE TABLE IF NOT EXISTS evento(
 );
 
 -- table manutenção
-CREATE TABLE manutencao (
+CREATE TABLE IF NOT EXISTS manutencao (
   id INT AUTO_INCREMENT PRIMARY KEY,
   descricao TEXT,
   data_manutencao DATETIME NOT NULL,
