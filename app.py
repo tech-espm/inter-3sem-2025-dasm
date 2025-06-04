@@ -6,6 +6,8 @@ import requests
 import logging
 from werkzeug.exceptions import HTTPException
 import re
+import traceback
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
 app = Flask(__name__)
 
@@ -38,6 +40,23 @@ def method_not_allowed(error):
 def internal_error(error):
     logger.error(f"Erro 500: {error}")
     return json.jsonify({'erro': 'Erro interno do servidor. Tente novamente mais tarde.'}), 500
+
+# Handler global para exceções não tratadas
+@app.errorhandler(Exception)
+def handle_unexpected_error(error):
+    logger.error(f"Erro inesperado: {error}\n{traceback.format_exc()}")
+    return json.jsonify({'erro': 'Erro inesperado no servidor. Tente novamente mais tarde.'}), 500
+
+# Handlers específicos para erros de banco de dados
+@app.errorhandler(IntegrityError)
+def handle_integrity_error(error):
+    logger.error(f"Erro de integridade no banco: {error}")
+    return json.jsonify({'erro': 'Violação de integridade no banco de dados (ex: registro duplicado).'}), 400
+
+@app.errorhandler(SQLAlchemyError)
+def handle_sqlalchemy_error(error):
+    logger.error(f"Erro no banco de dados: {error}")
+    return json.jsonify({'erro': 'Erro no banco de dados.'}), 500
 
 @app.get('/')
 def index():
@@ -142,10 +161,6 @@ def criar():
     print(dados.get('nome'))
     return Response(status=204)
 
-# if __name__ == '__main__':
-#     app.run(host=config.host, port=config.port, debug=True)
-
-
 # ROTAS - CONTRATANTE
 
 @app.route('/api/contratantes', methods=['GET'])
@@ -188,6 +203,9 @@ def api_criar_contratante():
 
         banco.criarContratante(nome, email, empresa, senha)
         return json.jsonify({"mensagem": "Contratante criado com sucesso"}), 201
+    except IntegrityError as e:
+        logger.error(f"Erro de integridade ao criar contratante: {e}")
+        return json.jsonify({'erro': 'E-mail já cadastrado.'}), 400
     except Exception as e:
         logger.error(f"Erro ao criar contratante: {e}")
         return json.jsonify({'erro': 'Erro ao criar contratante.'}), 500
@@ -210,6 +228,9 @@ def api_atualizar_contratante(id):
 
         banco.atualizarContratante(id, nome, email, empresa)
         return json.jsonify({"mensagem": "Contratante atualizado com sucesso"})
+    except IntegrityError as e:
+        logger.error(f"Erro de integridade ao atualizar contratante: {e}")
+        return json.jsonify({'erro': 'E-mail já cadastrado.'}), 400
     except Exception as e:
         logger.error(f"Erro ao atualizar contratante: {e}")
         return json.jsonify({'erro': 'Erro ao atualizar contratante.'}), 500
@@ -223,7 +244,5 @@ def api_deletar_contratante(id):
         logger.error(f"Erro ao deletar contratante: {e}")
         return json.jsonify({'erro': 'Erro ao deletar contratante.'}), 500
 
-
-# dps de tudo
 if __name__ == '__main__':
     app.run(host=config.host, port=config.port, debug=True)
