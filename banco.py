@@ -249,6 +249,29 @@ def deletarContratante(id):
         logger.error(f"Erro inesperado ao deletar contratante: {e}")
         raise
 
+def obterContratantePorEmail(email):
+    try:
+        with Session(engine) as sessao:
+            resultado = sessao.execute(
+                text("SELECT id, nome, email, empresa, senha FROM contratante WHERE email = :email"),
+                {'email': email}
+            ).first()
+            if resultado:
+                return {
+                    'id': resultado.id,
+                    'nome': resultado.nome,
+                    'email': resultado.email,
+                    'empresa': resultado.empresa,
+                    'senha': resultado.senha
+                }
+            return None
+    except SQLAlchemyError as e:
+        logger.error(f"Erro ao obter contratante por email: {e}")
+        raise
+    except Exception as e:
+        logger.error(f"Erro inesperado ao obter contratante por email: {e}")
+        raise
+
 def validar_email(email):
     return re.match(r"^[\w\.-]+@[\w\.-]+\.\w+$", email)
 

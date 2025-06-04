@@ -1,4 +1,4 @@
-from flask import Flask, render_template, json, request, Response
+from flask import Flask, render_template, json, request, Response, session, redirect, url_for
 from datetime import datetime, timedelta
 import config
 import banco
@@ -10,6 +10,7 @@ import traceback
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
 app = Flask(__name__)
+app.secret_key = 'sua_chave_secreta'  # Troque por uma chave forte em produção
 
 # Configuração de logging para registrar erros
 logging.basicConfig(level=logging.INFO)
@@ -58,30 +59,43 @@ def handle_sqlalchemy_error(error):
     logger.error(f"Erro no banco de dados: {error}")
     return json.jsonify({'erro': 'Erro no banco de dados.'}), 500
 
-@app.get('/')
+@app.route('/')
 def index():
     hoje = datetime.today().strftime('%Y-%m-%d')
     return render_template('index/index.html', hoje=hoje)
 
-@app.get('/sobre')
+@app.route('/sobre')
 def sobre():
     return render_template('index/sobre.html', titulo='Sobre Nós')
 
-@app.get('/contratar')
+@app.route('/contratar')
 def contratar():
     return render_template('index/contratar.html', titulo='Contratar')
 
-@app.get('/login')
-def login():
-    return render_template('index/login.html', titulo='Login')
-
-@app.get('/dashboard')
-def dashboard():
-    return render_template('index/dashboard.html', titulo='Dashboard')
-
-@app.get('/registrar')
+@app.route('/registrar')
 def registrar():
     return render_template('index/registrar.html', titulo='Cadastro')
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    erro = None
+    if request.method == 'POST':
+        email = request.form.get('username')
+        senha = request.form.get('password')
+        usuario = banco.obterContratantePorEmail(email)
+        if usuario and usuario['senha'] == senha:
+            session['usuario_id'] = usuario['id']
+            session['usuario_nome'] = usuario['nome']
+            return redirect(url_for('dashboard'))
+        else:
+            erro = 'Usuário ou senha inválidos'
+    return render_template('index/login.html', erro=erro, titulo='Login')
+
+@app.route('/dashboard')
+def dashboard():
+    if 'usuario_id' not in session:
+        return redirect(url_for('login'))
+    return render_template('index/dashboard.html', usuario_nome=session.get('usuario_nome'), titulo='Dashboard')
 
 @app.route("/obterDadosSemana")
 def obterDadosSemana():
@@ -136,25 +150,25 @@ def obterDadosMensalPresenca():
         logger.error(f"Erro ao obter dados mensal de presença: {e}")
         return json.jsonify({'erro': 'Erro ao obter dados mensal de presença.'}), 500
 
-@app.get('/semana')
+@app.route('/semana')
 def semana():
     data_inicial = (datetime.today() + timedelta(days=-29)).strftime('%Y-%m-%d')
     data_final = datetime.today().strftime('%Y-%m-%d')
     return render_template('index/semana.html', titulo='Consolidado por Semana', data_inicial=data_inicial, data_final=data_final)
 
-@app.get('/mensalDiaSemana')
+@app.route('/mensalDiaSemana')
 def mensalDiaSemana():
     data_inicial = (datetime.today() + timedelta(days=-29)).strftime('%Y-%m-%d')
     data_final = datetime.today().strftime('%Y-%m-%d')
     return render_template('index/mensalDiaSemana.html', titulo='Consolidado por Dia da Semana', data_inicial=data_inicial, data_final=data_final)
 
-@app.get('/mensalPresenca')
+@app.route('/mensalPresenca')
 def mensalPresenca():
     data_inicial = (datetime.today() + timedelta(days=-19)).strftime('%Y-%m-%d')
     data_final = datetime.today().strftime('%Y-%m-%d')
     return render_template('index/mensalPresenca.html', titulo='Presença por Dia', data_inicial=data_inicial, data_final=data_final)
 
-@app.post('/criar')
+@app.route('/criar', methods=['POST'])
 def criar():
     dados = request.json
     print(dados.get('id'))

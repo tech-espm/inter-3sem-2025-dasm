@@ -179,7 +179,6 @@
 </style>
 
 <div class="animated-bubbles">
-    <!-- Bolhas animadas de fundo -->
     <div class="bubble" style="left: 10%; width: 120px; height: 120px; animation-delay: 0s"></div>
     <div class="bubble" style="left: 30%; width: 80px; height: 80px; animation-delay: 4s"></div>
     <div class="bubble" style="left: 70%; width: 150px; height: 150px; animation-delay: 8s"></div>
@@ -193,17 +192,19 @@
                     Login
                     <i class="fas fa-lock" style="color: var(--sky-blue-1);"></i>
                 </h1>
-                <form style="justify-content: center; display: flex; flex-direction: column;">
+                {% if erro %}
+                    <div style="color: red; text-align: center; margin-bottom: 10px;">{{ erro }}</div>
+                {% endif %}
+                <form method="POST" style="justify-content: center; display: flex; flex-direction: column;">
                     <div class="form-group" style="margin: 10px;">
                         <label for="username">Usuário</label>
-                        <input type="text" class="form-control" id="username" placeholder="ex: usuario@empresa.com">
+                        <input type="text" class="form-control" id="username" name="username" placeholder="ex: usuario@empresa.com" required>
                     </div>
                     <div class="form-group" style="margin: 10px;">
                         <label for="password">Senha</label>
-                        <input type="password" class="form-control" id="password" placeholder="••••••••">
+                        <input type="password" class="form-control" id="password" name="password" placeholder="••••••••" required>
                     </div>
                     <button type="submit" class="btn btn-primary" style="color: white;">Conectar</button>
-                    
                     <div class="social-login">
                         <button type="button" class="btn social-btn">
                             <i class="fab fa-google" style="color: var(--sky-blue-1);"></i>
@@ -211,9 +212,7 @@
                         <button type="button" class="btn social-btn">
                             <i class="fab fa-linkedin" style="color: var(--sky-blue-1);"></i>
                         </button>
-
                     </div>
-                    
                     <div class="links-section">
                         <p style="text-align: center; margin-top: 25px; color: var(--aqua-blue-2)">
                             Primeiro acesso? <a href="/registrar">Registrar</a>
