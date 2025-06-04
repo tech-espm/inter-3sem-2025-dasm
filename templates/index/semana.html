@@ -10,15 +10,15 @@
 
     <div class="card shadow my-4">
         <div class="card-body">
-			<h1 style="text-align: center; font-size: 1.5rem;">Dados dos Últimos 7 Dias</h1>
-			<div id="div-heatmap"></div>
-		</div>
+            <h1 style="text-align: center; font-size: 1.5rem;">Dados dos Últimos 7 Dias</h1>
+            <div id="div-heatmap"></div>
+        </div>
     </div>
     <div class="card shadow my-4">
         <div class="card-body">
-			<h1 style="text-align: center; font-size: 1.5rem;">Consolidado dos Últimos 7 Dias</h1>
-			<div id="div-grafico-semana"></div>
-		</div>
+            <h1 style="text-align: center; font-size: 1.5rem;">Consolidado dos Últimos 7 Dias</h1>
+            <div id="div-grafico-semana" style="height: 400px;"></div>
+        </div>
     </div>
 
 </div>
@@ -26,7 +26,8 @@
 <script src="/static/js/jquery-validate/jquery.validate.min.js"></script>
 <script src="/static/js/jquery-validate/additional-methods.min.js"></script>
 <script src="/static/js/jquery-validate/localization/messages_pt_BR.min.js"></script>
-<script type="text/javascript" src="/static/js/chart.js/chart.min.js"></script>
+<!-- Google Charts loader -->
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
 <script type="text/javascript">
     "use strict";
@@ -55,9 +56,9 @@
         const r0 = 0xff;
         const g0 = 0xff;
         const b0 = 0xff;
-		const r1 = 0x00; // Vermelho (0)
-    	const g1 = 0x00; // Verde (0)
-    	const b1 = 0xff;
+        const r1 = 0x00; // Vermelho (0)
+        const g1 = 0x00; // Verde (0)
+        const b1 = 0xff;
         let r = Math.max(0, Math.min(255, ((perc * r1) + ((1 - perc) * r0)) | 0)).toString(16);
         let g = Math.max(0, Math.min(255, ((perc * g1) + ((1 - perc) * g0)) | 0)).toString(16);
         let b = Math.max(0, Math.min(255, ((perc * b1) + ((1 - perc) * b0)) | 0)).toString(16);
@@ -69,93 +70,100 @@
         return `background-color: ${corFundo}; color: ${corTexto};`;
     }
 
-	function gerarHeatmapSemana(dados) {
-		const colunas = ["Total", "Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
+    function gerarHeatmapSemana(dados) {
+        const colunas = ["Total", "Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
 
-		let html = [`<table class="table table-bordered table-sm w-50 mx-auto" style="height: auto; line-height: 1.2;"><thead><tr>`];
-		for (let i = 0; i < colunas.length; i++) {
-			html.push(`<th>${colunas[i]}</th>`);
-		}
+        let html = [`<table class="table table-bordered table-sm w-50 mx-auto" style="height: auto; line-height: 1.2;"><thead><tr>`];
+        for (let i = 0; i < colunas.length; i++) {
+            html.push(`<th>${colunas[i]}</th>`);
+        }
 
-		html.push(`
-			</tr>
-			</thead>
-			<tbody>
-		`);
+        html.push(`
+            </tr>
+            </thead>
+            <tbody>
+        `);
 
-		let menor = dados[0].total;
-		let maior = dados[0].total;
+        let menor = dados[0].total;
+        let maior = dados[0].total;
 
-		for (let i = 0; i < dados.length; i++) {
-			const dado = dados[i];
-			if (menor > dado.total)
-				menor = dado.total;
-			if (maior < dado.total)
-				maior = dado.total;
-		}
+        for (let i = 0; i < dados.length; i++) {
+            const dado = dados[i];
+            if (menor > dado.total)
+                menor = dado.total;
+            if (maior < dado.total)
+                maior = dado.total;
+        }
 
-		let delta = (maior - menor) || 1;
+        let delta = (maior - menor) || 1;
 
-		for (let h = 0; h <= 23; h++) {
-			html.push(`<tr><td>${h}:00</td>`);
-			for (let d = 1; d <= 7; d++) {
-				let total = 0;
-				for (let i = 0; i < dados.length; i++) {
-					if (dados[i].dia_semana === d && dados[i].hora === h) {
-						total = dados[i].total;
-						break;
-					}
-				}
-				let n = (total - menor) / delta;
-				html.push(`<td style="${coresHeatmap(n)}">${total}</td>`);
-			}
-			html.push(`</tr>`);
-		}
+        for (let h = 0; h <= 23; h++) {
+            html.push(`<tr><td>${h}:00</td>`);
+            for (let d = 1; d <= 7; d++) {
+                let total = 0;
+                for (let i = 0; i < dados.length; i++) {
+                    if (dados[i].dia_semana === d && dados[i].hora === h) {
+                        total = dados[i].total;
+                        break;
+                    }
+                }
+                let n = (total - menor) / delta;
+                html.push(`<td style="${coresHeatmap(n)}">${total}</td>`);
+            }
+            html.push(`</tr>`);
+        }
 
-		html.push(`</tbody></table>`);
-		document.getElementById("div-heatmap").innerHTML = html.join('');
-	}
+        html.push(`</tbody></table>`);
+        document.getElementById("div-heatmap").innerHTML = html.join('');
+    }
 
-	function gerarGraficoSemana(dados) {
-		let totaisPorDia = [0, 0, 0, 0, 0, 0, 0]; // Domingo a Sábado
-		for (let i = 0; i < dados.length; i++) {
-			let d = dados[i];
-			if (d.dia_semana >= 1 && d.dia_semana <= 7) {
-				totaisPorDia[d.dia_semana - 1] += d.total;
-			}
-		}
+    // Google Charts
+    google.charts.load('current', {'packages':['corechart']});
 
-		let labels = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
-		let ctxDiv = document.getElementById("div-grafico-semana");
-		ctxDiv.innerHTML = '<canvas id="grafico-semana" style="height: 40vh;"></canvas>';
-		let ctx = document.getElementById("grafico-semana").getContext('2d');
+    function gerarGraficoSemanaGoogle(dados) {
+        let totaisPorDia = [0, 0, 0, 0, 0, 0, 0]; // Domingo a Sábado
+        for (let i = 0; i < dados.length; i++) {
+            let d = dados[i];
+            if (d.dia_semana >= 1 && d.dia_semana <= 7) {
+                totaisPorDia[d.dia_semana - 1] += d.total;
+            }
+        }
 
-		new Chart(ctx, {
-			type: "bar",
-			data: {
-				labels: labels,
-				datasets: [{
-					label: "Total por Dia da Semana",
-					backgroundColor: "#4e73df",
-					borderColor: "#4e73df",
-					data: totaisPorDia,
-				}],
-			},
-			options: {
-				maintainAspectRatio: false,
-				plugins: {
-					legend: { display: false }
-				},
-				scales: {
-					y: {
-						beginAtZero: true
-					}
-				}
-			}
-		});
-	}
+        let dataArray = [
+            ['Dia', 'Total', { role: 'style' }]
+        ];
+        let labels = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
+        let cores = [
+            "#FF6384", // Domingo
+            "#36A2EB", // Segunda
+            "#FFCE56", // Terça
+            "#4BC0C0", // Quarta
+            "#9966FF", // Quinta
+            "#FF9F40", // Sexta
+            "#2ecc71"  // Sábado
+        ];
 
-	async function atualizarDados() {
+        for (let i = 0; i < 7; i++) {
+            dataArray.push([labels[i], totaisPorDia[i], `color: ${cores[i]}`]);
+        }
+
+        var data = google.visualization.arrayToDataTable(dataArray);
+
+        var options = {
+            title: 'Movimentação por Dia da Semana',
+            legend: { position: 'none' },
+            height: 400,
+            vAxis: { title: 'Quantidade de Pessoas', minValue: 0 },
+            hAxis: { title: 'Dia da Semana' },
+            bar: { groupWidth: "60%" },
+            fontSize: 14
+        };
+
+        var chart = new google.visualization.ColumnChart(document.getElementById('div-grafico-semana'));
+        chart.draw(data, options);
+    }
+
+    async function atualizarDados() {
         waitSwal();
 
         try {
@@ -170,8 +178,9 @@
                     return;
                 }
 
-				gerarHeatmapSemana(obj.semana);
-				gerarGraficoSemana(obj.semana);
+                gerarHeatmapSemana(obj.semana);
+                // Aguarda o carregamento do Google Charts antes de desenhar
+                google.charts.setOnLoadCallback(() => gerarGraficoSemanaGoogle(obj.semana));
             } else {
                 await exibirErro(response);
             }
