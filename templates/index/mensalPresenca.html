@@ -1,5 +1,14 @@
 {% extends 'layout.html' %}
 
+{% block head %}
+<style type="text/css">
+	table, td, th {
+		font-size: 10px;
+		font-weight: bold;
+	}
+</style>
+{% endblock %}
+
 {% block body %}
 
 <div class="container-fluid">
@@ -45,15 +54,23 @@
     <div class="card shadow my-4">
         <div class="card-body">
 			<h1 style="text-align: center; font-size: 1.5rem; color: var(--cor-1);">Consolidado pelo Dia da Semana Selecionado</h1>
-			<div id="div-heatmap-mensal-presenca" style="overflow-x: auto;"></div>
+			<div id="div-heatmap-mensal-presenca" style="overflow-x: auto;">
+				<div class="text-center">
+					Por favor, aguarde...
+				</div>
+			</div>
 		</div>
     </div>
 
     <div class="card shadow my-4">
         <div class="card-body">
-            <h1 style="text-align: center; font-size: 1.5rem; color: var(--cor-1);">Boxplot de Presença Mensal</h1>
-            <div id="boxplot_mensal_presenca" style="width: 100%; height: 500px;"></div>
-        </div>
+            <h1 style="text-align: center; font-size: 1.5rem; color: var(--cor-1);">Presença Máxima por Dia</h1>
+			<div id="div-grafico-presenca-maxima">
+				<div class="text-center">
+					Por favor, aguarde...
+				</div>
+			</div>
+		</div>
     </div>
 
 
@@ -63,55 +80,95 @@
 <script src="/static/js/jquery-validate/jquery.validate.min.js"></script>
 <script src="/static/js/jquery-validate/additional-methods.min.js"></script>
 <script src="/static/js/jquery-validate/localization/messages_pt_BR.min.js"></script>
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript" src="/static/js/chart.js/chart.min.js"></script>
 
 <script type="text/javascript">
     "use strict";
-    google.charts.load('current', { packages: ['corechart'] });
 
-    function gerarBoxplotPresenca(dados) {
-        google.charts.setOnLoadCallback(function () {
-            const agrupado = {};
+	function format2(x) {
+		return (x < 10 ? "0" + x : x.toString());
+	}
 
-            for (const item of dados) {
-                if (!agrupado[item.dia]) agrupado[item.dia] = [];
-                agrupado[item.dia].push(item.total);
-            }
+	function atualizarGraficoPresencaMaxima(dados) {
+		let div = document.getElementById("div-grafico-presenca-maxima");
+		div.innerHTML = '<canvas id="grafico-presenca-maxima" style="height: 30vh;"></canvas>';
 
-            const dataArray = [['Dia', 'Min', 'Q1', 'Q3', 'Max']];
+		let labels = [], data = [];
 
-            for (const dia in agrupado) {
-                const valores = agrupado[dia].sort((a, b) => a - b);
-                const min = valores[0];
-                const max = valores[valores.length - 1];
-                const q1 = valores[Math.floor(valores.length * 0.25)];
-                const q3 = valores[Math.floor(valores.length * 0.75)];
+		for (let i = 0; i < dados.length; i++) {
+			labels.push(dados[i].dia);
+			data.push(dados[i].total);
+		}
 
-                const partes = dia.split('-');
-                const dataDate = new Date(parseInt(partes[0]), parseInt(partes[1]) - 1, parseInt(partes[2]));
-
-                dataArray.push([dataDate, min, q1, q3, max]);
-            }
-
-            const data = google.visualization.arrayToDataTable(dataArray, true);
-
-            const options = {
-                title: 'Distribuição de Presença por Dia',
-                legend: 'none',
-                bar: { groupWidth: '50%' },
-                candlestick: {
-                    fallingColor: { strokeWidth: 0, fill: '#1E88E5' },
-                    risingColor: { strokeWidth: 0, fill: '#1E88E5' }
-                },
-                vAxis: { title: 'Total de Pessoas' },
-                hAxis: { format: 'dd/MM' }
-            };
-
-            const chart = new google.visualization.CandlestickChart(document.getElementById('boxplot_mensal_presenca'));
-            chart.draw(data, options);
-        });
-    }
-
+		let grafico = new Chart(document.getElementById("grafico-presenca-maxima"), {
+			type: "bar",
+			data: {
+				labels: labels,
+				datasets: [{
+					label: "Presença Máxima",
+					backgroundColor: "#0000ff",
+					hoverBackgroundColor: "#0000ff",
+					borderColor: "#0000ff",
+					data: data,
+				}],
+			},
+			options: {
+				maintainAspectRatio: false,
+				layout: {
+					padding: {
+						left: 10,
+						right: 25,
+						top: 25,
+						bottom: 0
+					}
+				},
+				scales: {
+					x: {
+						gridLines: {
+							display: false,
+							drawBorder: false
+						},
+						ticks: {
+							maxTicksLimit: 10
+						},
+						maxBarThickness: 25,
+					},
+					y: {
+						//display: false,
+						ticks: {
+							min: 0,
+							max: 10,
+							maxTicksLimit: 10,
+							padding: 10
+						},
+						gridLines: {
+							color: "rgb(234, 236, 244)",
+							zeroLineColor: "rgb(234, 236, 244)",
+							drawBorder: false,
+							borderDash: [2],
+							zeroLineBorderDash: [2]
+						}
+					},
+				},
+				legend: {
+					display: false
+				},
+				tooltips: {
+					titleMarginBottom: 10,
+					titleFontColor: '#6e707e',
+					titleFontSize: 14,
+					backgroundColor: "rgb(255,255,255)",
+					bodyFontColor: "#858796",
+					borderColor: '#dddfeb',
+					borderWidth: 1,
+					xPadding: 15,
+					yPadding: 15,
+					displayColors: false,
+					caretPadding: 10
+				},
+			}
+		});
+	}
 
     function relativeLuminance(rgb) {
         if ((typeof rgb) === "string")
@@ -165,12 +222,15 @@
 		const colunas = ["Total"];
 
 		let ultimoDia = null;
+		let maximosPorDia = [];
 		for (let i = 0; i < dados.length; i++) {
 			if (!ultimoDia || ultimoDia !== dados[i].dia) {
 				ultimoDia = dados[i].dia;
 				dados[i].total = 0;
+				maximosPorDia.push({ dia: dados[i].dia, total: 0 });
 			} else {
 				dados[i].total = Math.max(0, dados[i - 1].total + dados[i].total_entrada - dados[i].total_saida);
+				maximosPorDia[maximosPorDia.length - 1].total = Math.max(maximosPorDia[maximosPorDia.length - 1].total, dados[i].total);
 			}
 		}
 
@@ -206,7 +266,7 @@
 		// @@@ Filtro por horário comercial
 		//for (let h = 8; h <= 18; h++) {
 		for (let h = 0; h <= 23; h++) {
-			html.push(`<tr><td>${h}:00</td>`);
+			html.push(`<tr><td>${format2(h)}:00</td>`);
 			for (let d = 1; d < colunas.length; d++) {
 				const dia = colunas[d];
 				let total = 0;
@@ -224,6 +284,8 @@
 
 		html.push(`</tbody></table>`);
 		document.getElementById("div-heatmap-mensal-presenca").innerHTML = html.join('');
+
+		atualizarGraficoPresencaMaxima(maximosPorDia);
 	}
 
 	async function atualizarDados() {
@@ -244,7 +306,6 @@
                 }
 
 				gerarHeatmapMensalPresenca(obj.mensal_presenca);
-                gerarBoxplotPresenca(obj.mensal_presenca);
 
             } else {
                 await exibirErro(response);
@@ -255,7 +316,6 @@
     }
 
     atualizarDados();
-    google.charts.setOnLoadCallback(atualizarDados);
 </script>
 
 {% endblock %}

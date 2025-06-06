@@ -123,16 +123,17 @@ def listarConsolidadoMensalDiaSemana(data_inicial, data_final, dia_semana):
                 'dia_semana': dia_semana
             }
             registros = sessao.execute(text("""
-                select date_format(date(data), '%d/%m/%Y') dia, extract(hour from data) hora, cast(sum(entrada + saida) as signed) total
+                select date_format(date(data), '%Y-%m-%d') diaISO, date_format(date(data), '%d/%m/%Y') dia, extract(hour from data) hora, cast(sum(entrada + saida) as signed) total
                 from passagem
                 where data between :data_inicial and :data_final
                 and dayofweek(data) = :dia_semana
                 and id_sensor = 2
-                group by dia, hora
+                group by diaISO, dia, hora
+				order by diaISO, hora;
             """), parametros)
             return [
-                {"dia": dia, "hora": hora, "total": total}
-                for dia, hora, total in registros
+                { "dia": dia, "hora": hora, "total": total}
+                for diaISO, dia, hora, total in registros
             ]
     except SQLAlchemyError as e:
         logger.error(f"Erro ao listar consolidado mensal por dia da semana: {e}")
@@ -149,16 +150,16 @@ def listarConsolidadoMensalPresenca(data_inicial, data_final):
                 'data_final': data_final + ' 23:59:59'
             }
             registros = sessao.execute(text("""
-                select date_format(date(data), '%d/%m') dia, extract(hour from data) hora, cast(sum(entrada) as signed) total_entrada, cast(sum(saida) as signed) total_saida
+                select date_format(date(data), '%Y-%m-%d') diaISO, date_format(date(data), '%d/%m') dia, extract(hour from data) hora, cast(sum(entrada) as signed) total_entrada, cast(sum(saida) as signed) total_saida
                 from passagem
                 where data between :data_inicial and :data_final
                 and id_sensor = 2
-                group by dia, hora
-                order by dia, hora;
+                group by diaISO, dia, hora
+                order by diaISO, hora;
             """), parametros)
             return [
-                {"dia": dia, "hora": hora, "total_entrada": total_entrada, "total_saida": total_saida}
-                for dia, hora, total_entrada, total_saida in registros
+                {"diaISO": diaISO, "dia": dia, "hora": hora, "total_entrada": total_entrada, "total_saida": total_saida}
+                for diaISO, dia, hora, total_entrada, total_saida in registros
             ]
     except SQLAlchemyError as e:
         logger.error(f"Erro ao listar consolidado mensal de presença: {e}")

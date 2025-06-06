@@ -1,5 +1,14 @@
 {% extends 'layout.html' %}
 
+{% block head %}
+<style type="text/css">
+	table, td, th {
+		font-size: 10px;
+		font-weight: bold;
+	}
+</style>
+{% endblock %}
+
 {% block body %}
 
 <div class="container-fluid">
@@ -66,6 +75,10 @@
 
 <script type="text/javascript">
     "use strict";
+
+	function format2(x) {
+		return (x < 10 ? "0" + x : x.toString());
+	}
 
     function relativeLuminance(rgb) {
         if ((typeof rgb) === "string")
@@ -148,7 +161,7 @@
 		let delta = (maior - menor) || 1;
 
 		for (let h = 0; h <= 23; h++) {
-			html.push(`<tr><td>${h}:00</td>`);
+			html.push(`<tr><td>${format2(h)}:00</td>`);
 			for (let d = 1; d < colunas.length; d++) {
 				const dia = colunas[d];
 				let total = 0;
