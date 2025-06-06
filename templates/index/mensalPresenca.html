@@ -5,7 +5,7 @@
 <div class="container-fluid">
 
     <h1 class="text-center my-4" style="font-weight: bold;">
-        DASM
+        Análise Mensal de Presença
     </h1>
 
     <div class="row">
@@ -35,7 +35,7 @@
         <div class="col-md-4">
             <div class="card shadow my-4">
                 <div class="card-body">
-                    <h1 style="text-align: center; font-size: 1.5rem;">Dados dos Últimos 7 Dias</h1>
+                    <h1 style="text-align: center; font-size: 1.5rem; color: var(--cor-1);">Dados dos Últimos 7 Dias</h1>
                     <div></div>
                 </div>
             </div>
@@ -44,20 +44,74 @@
 
     <div class="card shadow my-4">
         <div class="card-body">
-			<h1 style="text-align: center; font-size: 1.5rem;">Consolidado pelo Dia da Semana Selecionado</h1>
+			<h1 style="text-align: center; font-size: 1.5rem; color: var(--cor-1);">Consolidado pelo Dia da Semana Selecionado</h1>
 			<div id="div-heatmap-mensal-presenca" style="overflow-x: auto;"></div>
 		</div>
     </div>
+
+    <div class="card shadow my-4">
+        <div class="card-body">
+            <h1 style="text-align: center; font-size: 1.5rem; color: var(--cor-1);">Boxplot de Presença Mensal</h1>
+            <div id="boxplot_mensal_presenca" style="width: 100%; height: 500px;"></div>
+        </div>
+    </div>
+
+
 
 </div>
 
 <script src="/static/js/jquery-validate/jquery.validate.min.js"></script>
 <script src="/static/js/jquery-validate/additional-methods.min.js"></script>
 <script src="/static/js/jquery-validate/localization/messages_pt_BR.min.js"></script>
-<script type="text/javascript" src="/static/js/chart.js/chart.min.js"></script>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
 <script type="text/javascript">
     "use strict";
+    google.charts.load('current', { packages: ['corechart'] });
+
+    function gerarBoxplotPresenca(dados) {
+        google.charts.setOnLoadCallback(function () {
+            const agrupado = {};
+
+            for (const item of dados) {
+                if (!agrupado[item.dia]) agrupado[item.dia] = [];
+                agrupado[item.dia].push(item.total);
+            }
+
+            const dataArray = [['Dia', 'Min', 'Q1', 'Q3', 'Max']];
+
+            for (const dia in agrupado) {
+                const valores = agrupado[dia].sort((a, b) => a - b);
+                const min = valores[0];
+                const max = valores[valores.length - 1];
+                const q1 = valores[Math.floor(valores.length * 0.25)];
+                const q3 = valores[Math.floor(valores.length * 0.75)];
+
+                const partes = dia.split('-');
+                const dataDate = new Date(parseInt(partes[0]), parseInt(partes[1]) - 1, parseInt(partes[2]));
+
+                dataArray.push([dataDate, min, q1, q3, max]);
+            }
+
+            const data = google.visualization.arrayToDataTable(dataArray, true);
+
+            const options = {
+                title: 'Distribuição de Presença por Dia',
+                legend: 'none',
+                bar: { groupWidth: '50%' },
+                candlestick: {
+                    fallingColor: { strokeWidth: 0, fill: '#1E88E5' },
+                    risingColor: { strokeWidth: 0, fill: '#1E88E5' }
+                },
+                vAxis: { title: 'Total de Pessoas' },
+                hAxis: { format: 'dd/MM' }
+            };
+
+            const chart = new google.visualization.CandlestickChart(document.getElementById('boxplot_mensal_presenca'));
+            chart.draw(data, options);
+        });
+    }
+
 
     function relativeLuminance(rgb) {
         if ((typeof rgb) === "string")
@@ -190,6 +244,8 @@
                 }
 
 				gerarHeatmapMensalPresenca(obj.mensal_presenca);
+                gerarBoxplotPresenca(obj.mensal_presenca);
+
             } else {
                 await exibirErro(response);
             }
@@ -199,6 +255,7 @@
     }
 
     atualizarDados();
+    google.charts.setOnLoadCallback(atualizarDados);
 </script>
 
 {% endblock %}

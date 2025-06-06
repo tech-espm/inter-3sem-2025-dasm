@@ -5,19 +5,38 @@
 <div class="container-fluid">
 
     <h1 class="text-center my-4" style="font-weight: bold;">
-        DASM
+        Análise Semanal de Presença
     </h1>
+
+    <p class="text-center mb-4" style="font-size: 1.2rem;">
+        Esta página exibe a análise de presença semanal, permitindo visualizar os dados de movimentação por hora e dia da semana.
+        A análise semanal de presença do DASM (Dados para Análise e Soluções de Manutenção) oferece uma visão detalhada da movimentação de pessoas em um ponto de venda ou espaço monitorado ao longo dos últimos sete dias. Essa funcionalidade é essencial para gestores e equipes que buscam otimizar operações, planejar manutenções ou entender o comportamento do público. Através de duas visualizações intuitivas — um heatmap e um gráfico de barras —, a análise traduz dados brutos em insights acionáveis, permitindo identificar padrões de fluxo e tomar decisões informadas.
+    </p>
 
     <div class="card shadow my-4">
         <div class="card-body">
-            <h1 style="text-align: center; font-size: 1.5rem;">Dados dos Últimos 7 Dias</h1>
-            <div id="div-heatmap"></div>
+            <h1 style="text-align: center; font-size: 1.5rem; color: var(--cor-1);">Consolidado dos Últimos 7 Dias</h1>
+            <div id="div-grafico-semana" style="height: 400px;"></div>
         </div>
     </div>
+
     <div class="card shadow my-4">
         <div class="card-body">
-            <h1 style="text-align: center; font-size: 1.5rem;">Consolidado dos Últimos 7 Dias</h1>
-            <div id="div-grafico-semana" style="height: 400px;"></div>
+            <h1 class="mb-4" style="text-align: center; font-size: 1.8rem; color: var(--cor-1);">Dados dos Últimos 7 Dias</h1>
+            <div class="row">
+                <div class="col-md-4" style="padding: 20px;">
+                    <h4 style="color: var(--cor-1);">Legenda:</h4>
+                    <p style="color: var(--cor-1);">O heatmap apresenta a quantidade de pessoas em cada hora do dia (de 0h às 23h) para os sete dias da semana, de domingo a sábado. Cada célula da tabela mostra o total de visitantes em um horário específico, com cores que variam de branco (menor movimentação) a tons de azul escuro (maior movimentação). Essa gradação visual, gerada dinamicamente com base nos dados, facilita a identificação de períodos de pico e momentos mais tranquilos.</p>
+                    <p style="color: var(--cor-1);">Por exemplo:</p>
+                    <ul>
+                       <li style="color: var(--cor-1);">Horários de pico (azul escuro) indicam alta concentração de pessoas, úteis para planejar reforços na equipe ou manutenções fora desses períodos.</li>
+                       <li style="color: var(--cor-1);">Horários ociosos (branco) mostram baixa presença, ideais para agendar atividades que exigem menos fluxo, como limpezas ou reparos.</li>
+                    </ul>
+                </div>
+                <div class="col-md-8">
+                    <div id="div-heatmap" class="mb-4"></div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -71,7 +90,7 @@
     }
 
     function gerarHeatmapSemana(dados) {
-        const colunas = ["Total", "Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
+        const colunas = ["Horário", "Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
 
         let html = [`<table class="table table-bordered table-sm w-50 mx-auto" style="height: auto; line-height: 1.2;"><thead><tr>`];
         for (let i = 0; i < colunas.length; i++) {

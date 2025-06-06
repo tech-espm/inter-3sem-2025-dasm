@@ -162,13 +162,10 @@
                 <div class="offcanvas-body">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="/#sobre">Agendamento</a>
+                            <a class="nav-link" href="/semana">Análise Semanal</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/#funcionalidades">Análise Semanal</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/contact">Análise Mês</a>
+                            <a class="nav-link" href="/mensal">Análise Mês</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/team">Informações</a>
@@ -274,5 +271,81 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+
+    <script>
+        // Google Charts
+        google.charts.load('current', {'packages':['corechart']});
+
+        function gerarGraficoSemanaGoogle(dados) {
+            let totaisPorDia = [0, 0, 0, 0, 0, 0, 0]; // Domingo a Sábado
+            for (let i = 0; i < dados.length; i++) {
+                let d = dados[i];
+                if (d.dia_semana >= 1 && d.dia_semana <= 7) {
+                    totaisPorDia[d.dia_semana - 1] += d.total;
+                }
+            }
+
+            let dataArray = [
+                ['Dia', 'Total', { role: 'style' }]
+            ];
+            let labels = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
+            let cores = [
+                "#FF6384", // Domingo
+                "#36A2EB", // Segunda
+                "#FFCE56", // Terça
+                "#4BC0C0", // Quarta
+                "#9966FF", // Quinta
+                "#FF9F40", // Sexta
+                "#2ecc71"  // Sábado
+            ];
+
+            for (let i = 0; i < 7; i++) {
+                dataArray.push([labels[i], totaisPorDia[i], `color: ${cores[i]}`]);
+            }
+
+            var data = google.visualization.arrayToDataTable(dataArray);
+
+            var options = {
+                title: 'Movimentação por Dia da Semana',
+                legend: { position: 'none' },
+                height: 400,
+                vAxis: { title: 'Quantidade de Pessoas', minValue: 0 },
+                hAxis: { title: 'Dia da Semana' },
+                bar: { groupWidth: "60%" },
+                fontSize: 14
+            };
+
+            var chart = new google.visualization.ColumnChart(document.getElementById('div-grafico-semana'));
+            chart.draw(data, options);
+        }
+
+        async function atualizarDados() {
+            waitSwal();
+
+            try {
+                let response = await fetch(`/obterDadosSemana`);
+
+                if (response.ok) {
+                    Swal.close();
+
+                    const obj = await response.json();
+                    if (!obj || !obj.semana || !obj.semana.length) {
+                        Swal.fire("Erro", "Sem dados no período especificado!", "error");
+                        return;
+                    }
+
+                    gerarHeatmapSemana(obj.semana);
+                    // Aguarda o carregamento do Google Charts antes de desenhar
+                    google.charts.setOnLoadCallback(() => gerarGraficoSemanaGoogle(obj.semana));
+                } else {
+                    await exibirErro(response);
+                }
+            } catch (ex) {
+                Swal.fire("Erro", "Erro ao listar os dados: " + ex.message, "error");
+            }
+        }
+
+        atualizarDados();
+    </script>
 </body>
 </html>
