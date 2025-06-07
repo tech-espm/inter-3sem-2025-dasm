@@ -177,6 +177,33 @@
             opacity: 0;
         }
     }
+
+    .swal2-glass {
+        background: linear-gradient(145deg, rgba(1, 66, 122, 0.85), rgba(42, 111, 151, 0.7)) !important;
+        color: var(--sky-blue-2) !important;
+        border-radius: 18px !important;
+        box-shadow: 0 8px 32px rgba(1, 42, 74, 0.4) !important;
+        border: 1px solid rgba(169, 214, 229, 0.18) !important;
+        backdrop-filter: blur(8px) !important;
+    }
+    .swal2-title-custom {
+        color: var(--sky-blue-2) !important;
+        text-shadow: 0 2px 8px rgba(1, 66, 122, 0.3);
+        font-size: 2rem;
+        font-family: 'Signika Negative', sans-serif;
+    }
+    .swal2-confirm-custom {
+        background: linear-gradient(135deg, var(--ocean-blue-1), var(--aqua-blue-1)) !important;
+        color: #fff !important;
+        border-radius: 8px !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        box-shadow: 0 4px 16px rgba(42, 111, 151, 0.2);
+    }
+    .swal2-confirm-custom:focus {
+        box-shadow: 0 0 0 2px var(--aqua-blue-2) !important;
+    }
 </style>
 <body>
     <div class="animated-bubbles">
@@ -195,6 +222,7 @@
                         <i class="fas fa-user-plus" style="color: var(--sky-blue-1);"></i>
                     </h1>
                     <div class="container-fluid">
+                        <form id="form-registrar">
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group" style="margin: 10px;">
@@ -222,9 +250,8 @@
                                 </div>
                             </div>
                         </div>
-                
                         <button type="submit" class="btn btn-primary" style="color: white;">Cadastrar</button>
-                    
+                        </form>
                         <div class="social-login">
                         
                         </div>
@@ -234,14 +261,15 @@
                                 Já está cadastrado(a)? <a href="/login">Login</a>
                             </p>
                         </div>
-                    </form>
                 </div>
             </div>
         </div>
     </div>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
     <script>
     document.getElementById("form-registrar").addEventListener("submit", async function(e) {
     e.preventDefault();
@@ -253,12 +281,24 @@
     const confirmPassword = document.getElementById("confirmPassword").value;
 
     if (!nome || !email || !company || !password || !confirmPassword) {
-      alert("Por favor, preencha todos os campos.");
+      Swal.fire({
+        icon: 'warning',
+        title: 'Atenção',
+        text: 'Por favor, preencha todos os campos.',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#468faf'
+      });
       return;
     }
 
     if (password !== confirmPassword) {
-      alert("As senhas não coincidem.");
+      Swal.fire({
+        icon: 'error',
+        title: 'Erro',
+        text: 'As senhas não coincidem.',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#468faf'
+      });
       return;
     }
 
@@ -277,14 +317,41 @@
       const json = await resposta.json();
 
       if (resposta.ok) {
-        alert(json.mensagem);
+        Swal.fire({
+          icon: 'success',
+          title: 'Cadastro realizado!',
+          text: json.mensagem,
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#468faf',
+          customClass: {
+            popup: 'swal2-glass',
+            title: 'swal2-title-custom',
+            confirmButton: 'swal2-confirm-custom'
+          }
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = "/login";
+          }
+        });
         document.getElementById("form-registrar").reset();
       } else {
-        alert(json.erro || "Erro ao cadastrar.");
+        Swal.fire({
+          icon: 'error',
+          title: 'Erro',
+          text: json.erro || "Erro ao cadastrar.",
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#468faf'
+        });
       }
 
     } catch (erro) {
-      alert("Erro na requisição: " + erro);
+      Swal.fire({
+        icon: 'error',
+        title: 'Erro na requisição',
+        text: erro.message,
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#468faf'
+      });
     }
   });
 </script>
