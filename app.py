@@ -10,7 +10,7 @@ import traceback
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
 app = Flask(__name__)
-app.secret_key = 'sua_chave_secreta'  # Troque por uma chave forte em produção
+app.secret_key = 'dimitrof'
 
 # Configuração de logging para registrar erros
 logging.basicConfig(level=logging.INFO)
