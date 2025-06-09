@@ -2,10 +2,10 @@
 
 {% block head %}
 <style type="text/css">
-	table, td, th {
-		font-size: 10px;
-		font-weight: bold;
-	}
+    table, td, th {
+        font-size: 10px;
+        font-weight: bold;
+    }
 </style>
 {% endblock %}
 
@@ -53,27 +53,25 @@
 
     <div class="card shadow my-4">
         <div class="card-body">
-			<h1 style="text-align: center; font-size: 1.5rem; color: var(--cor-1);">Consolidado pelo Dia da Semana Selecionado</h1>
-			<div id="div-heatmap-mensal-presenca" style="overflow-x: auto;">
-				<div class="text-center">
-					Por favor, aguarde...
-				</div>
-			</div>
-		</div>
+            <h1 style="text-align: center; font-size: 1.5rem; color: var(--cor-1);">Consolidado pelo Dia da Semana Selecionado</h1>
+            <div id="div-heatmap-mensal-presenca" style="overflow-x: auto;">
+                <div class="text-center">
+                    Por favor, aguarde...
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="card shadow my-4">
         <div class="card-body">
             <h1 style="text-align: center; font-size: 1.5rem; color: var(--cor-1);">Presença Máxima por Dia</h1>
-			<div id="div-grafico-presenca-maxima">
-				<div class="text-center">
-					Por favor, aguarde...
-				</div>
-			</div>
-		</div>
+            <div id="div-grafico-presenca-maxima">
+                <div class="text-center">
+                    Por favor, aguarde...
+                </div>
+            </div>
+        </div>
     </div>
-
-
 
 </div>
 
@@ -85,118 +83,96 @@
 <script type="text/javascript">
     "use strict";
 
-	function format2(x) {
-		return (x < 10 ? "0" + x : x.toString());
-	}
-
-	function atualizarGraficoPresencaMaxima(dados) {
-		let div = document.getElementById("div-grafico-presenca-maxima");
-		div.innerHTML = '<canvas id="grafico-presenca-maxima" style="height: 30vh;"></canvas>';
-
-		let labels = [], data = [];
-
-		for (let i = 0; i < dados.length; i++) {
-			labels.push(dados[i].dia);
-			data.push(dados[i].total);
-		}
-
-		let grafico = new Chart(document.getElementById("grafico-presenca-maxima"), {
-			type: "bar",
-			data: {
-				labels: labels,
-				datasets: [{
-					label: "Presença Máxima",
-					backgroundColor: "#0000ff",
-					hoverBackgroundColor: "#0000ff",
-					borderColor: "#0000ff",
-					data: data,
-				}],
-			},
-			options: {
-				maintainAspectRatio: false,
-				layout: {
-					padding: {
-						left: 10,
-						right: 25,
-						top: 25,
-						bottom: 0
-					}
-				},
-				scales: {
-					x: {
-						gridLines: {
-							display: false,
-							drawBorder: false
-						},
-						ticks: {
-							maxTicksLimit: 10
-						},
-						maxBarThickness: 25,
-					},
-					y: {
-						//display: false,
-						ticks: {
-							min: 0,
-							max: 10,
-							maxTicksLimit: 10,
-							padding: 10
-						},
-						gridLines: {
-							color: "rgb(234, 236, 244)",
-							zeroLineColor: "rgb(234, 236, 244)",
-							drawBorder: false,
-							borderDash: [2],
-							zeroLineBorderDash: [2]
-						}
-					},
-				},
-				legend: {
-					display: false
-				},
-				tooltips: {
-					titleMarginBottom: 10,
-					titleFontColor: '#6e707e',
-					titleFontSize: 14,
-					backgroundColor: "rgb(255,255,255)",
-					bodyFontColor: "#858796",
-					borderColor: '#dddfeb',
-					borderWidth: 1,
-					xPadding: 15,
-					yPadding: 15,
-					displayColors: false,
-					caretPadding: 10
-				},
-			}
-		});
-	}
-
-    function relativeLuminance(rgb) {
-        if ((typeof rgb) === "string")
-            rgb = parseInt(rgb.replace("#", ""), 16);
-        rgb |= 0;
-        if (rgb < 0)
-            return 1;
-        var RsRGB = ((rgb >>> 16) & 0xff) / 255.0,
-            GsRGB = ((rgb >>> 8) & 0xff) / 255.0,
-            BsRGB = (rgb & 0xff) / 255.0,
-            R, G, B;
-        if (RsRGB <= 0.03928) R = RsRGB / 12.92; else R = Math.pow((RsRGB + 0.055) / 1.055, 2.4);
-        if (GsRGB <= 0.03928) G = GsRGB / 12.92; else G = Math.pow((GsRGB + 0.055) / 1.055, 2.4);
-        if (BsRGB <= 0.03928) B = BsRGB / 12.92; else B = Math.pow((BsRGB + 0.055) / 1.055, 2.4);
-        return (0.2126 * R) + (0.7152 * G) + (0.0722 * B);
+    function format2(x) {
+        return (x < 10 ? "0" + x : x.toString());
     }
 
-    function textColorForBackground(i) {
-        return (relativeLuminance(i) < 0.4) ? "#ffffff" : "#000000";
+    function atualizarGraficoPresencaMaxima(dados) {
+        let div = document.getElementById("div-grafico-presenca-maxima");
+        div.innerHTML = '<canvas id="grafico-presenca-maxima" style="height: 30vh;"></canvas>';
+
+        let labels = [], data = [];
+
+        for (let i = 0; i < dados.length; i++) {
+            labels.push(dados[i].dia);
+            data.push(dados[i].total);
+        }
+
+        let grafico = new Chart(document.getElementById("grafico-presenca-maxima"), {
+            type: "bar",
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: "Presença Máxima",
+                    backgroundColor: "#D4A5FF", // Roxo claro
+                    hoverBackgroundColor: "#A566FF", // Roxo médio
+                    borderColor: "#8A3FFC", // Roxo escuro
+                    data: data,
+                }],
+            },
+            options: {
+                maintainAspectRatio: false,
+                layout: {
+                    padding: {
+                        left: 10,
+                        right: 25,
+                        top: 25,
+                        bottom: 0
+                    }
+                },
+                scales: {
+                    x: {
+                        gridLines: {
+                            display: false,
+                            drawBorder: false
+                        },
+                        ticks: {
+                            maxTicksLimit: 10
+                        },
+                        maxBarThickness: 25,
+                    },
+                    y: {
+                        ticks: {
+                            min: 0,
+                            maxTicksLimit: 10,
+                            padding: 10
+                        },
+                        gridLines: {
+                            color: "rgb(234, 236, 244)",
+                            zeroLineColor: "rgb(234, 236, 244)",
+                            drawBorder: false,
+                            borderDash: [2],
+                            zeroLineBorderDash: [2]
+                        }
+                    },
+                },
+                legend: {
+                    display: false
+                },
+                tooltips: {
+                    titleMarginBottom: 10,
+                    titleFontColor: '#6e707e',
+                    titleFontSize: 14,
+                    backgroundColor: "rgb(255,255,255)",
+                    bodyFontColor: "#858796",
+                    borderColor: '#dddfeb',
+                    borderWidth: 1,
+                    xPadding: 15,
+                    yPadding: 15,
+                    displayColors: false,
+                    caretPadding: 10
+                },
+            }
+        });
     }
 
     function coresHeatmap(perc) {
         const r0 = 0xff;
         const g0 = 0xff;
         const b0 = 0xff;
-        const r1 = 0x00;
-        const g1 = 0x00; 
-        const b1 = 0xff;
+        const r1 = 0x4A; // Roxo escuro
+        const g1 = 0x14;
+        const b1 = 0x8C;
         let r = Math.max(0, Math.min(255, ((perc * r1) + ((1 - perc) * r0)) | 0)).toString(16);
         let g = Math.max(0, Math.min(255, ((perc * g1) + ((1 - perc) * g0)) | 0)).toString(16);
         let b = Math.max(0, Math.min(255, ((perc * b1) + ((1 - perc) * b0)) | 0)).toString(16);
@@ -204,7 +180,7 @@
         if (g.length < 2) g = "0" + g;
         if (b.length < 2) b = "0" + b;
         const corFundo = "#" + r + g + b;
-        const corTexto = textColorForBackground(corFundo);
+        const corTexto = (perc > 0.5) ? "#ffffff" : "#000000";
         return `background-color: ${corFundo}; color: ${corTexto};`;
     }
 
@@ -218,77 +194,75 @@
         }
     });
 
-	function gerarHeatmapMensalPresenca(dados) {
-		const colunas = ["Total"];
+    function gerarHeatmapMensalPresenca(dados) {
+        const colunas = ["Total"];
 
-		let ultimoDia = null;
-		let maximosPorDia = [];
-		for (let i = 0; i < dados.length; i++) {
-			if (!ultimoDia || ultimoDia !== dados[i].dia) {
-				ultimoDia = dados[i].dia;
-				dados[i].total = 0;
-				maximosPorDia.push({ dia: dados[i].dia, total: 0 });
-			} else {
-				dados[i].total = Math.max(0, dados[i - 1].total + dados[i].total_entrada - dados[i].total_saida);
-				maximosPorDia[maximosPorDia.length - 1].total = Math.max(maximosPorDia[maximosPorDia.length - 1].total, dados[i].total);
-			}
-		}
+        let ultimoDia = null;
+        let maximosPorDia = [];
+        for (let i = 0; i < dados.length; i++) {
+            if (!ultimoDia || ultimoDia !== dados[i].dia) {
+                ultimoDia = dados[i].dia;
+                dados[i].total = 0;
+                maximosPorDia.push({ dia: dados[i].dia, total: 0 });
+            } else {
+                dados[i].total = Math.max(0, dados[i - 1].total + dados[i].total_entrada - dados[i].total_saida);
+                maximosPorDia[maximosPorDia.length - 1].total = Math.max(maximosPorDia[maximosPorDia.length - 1].total, dados[i].total);
+            }
+        }
 
-		let menor = dados[0].total;
-		let maior = dados[0].total;
-		ultimoDia = dados[0].dia;
-		colunas.push(ultimoDia);
-		for (let i = 1; i < dados.length; i++) {
-			const dado = dados[i];
-			if (menor > dado.total)
-				menor = dado.total;
-			if (maior < dado.total)
-				maior = dado.total;
-			if (ultimoDia !== dado.dia) {
-				ultimoDia = dado.dia;
-				colunas.push(ultimoDia);
-			}
-		}
+        let menor = dados[0].total;
+        let maior = dados[0].total;
+        ultimoDia = dados[0].dia;
+        colunas.push(ultimoDia);
+        for (let i = 1; i < dados.length; i++) {
+            const dado = dados[i];
+            if (menor > dado.total)
+                menor = dado.total;
+            if (maior < dado.total)
+                maior = dado.total;
+            if (ultimoDia !== dado.dia) {
+                ultimoDia = dado.dia;
+                colunas.push(ultimoDia);
+            }
+        }
 
-		let html = [`<table class="table table-bordered table-sm w-50 mx-auto" style="height: auto; line-height: 1.2;"><thead><tr>`];
-		for (let i = 0; i < colunas.length; i++) {
-			html.push(`<th>${colunas[i]}</th>`);
-		}
+        let html = [`<table class="table table-bordered table-sm w-50 mx-auto" style="height: auto; line-height: 1.2;"><thead><tr>`];
+        for (let i = 0; i < colunas.length; i++) {
+            html.push(`<th>${colunas[i]}</th>`);
+        }
 
-		html.push(`
-			</tr>
-			</thead>
-			<tbody>
-		`);
+        html.push(`
+            </tr>
+            </thead>
+            <tbody>
+        `);
 
-		let delta = (maior - menor) || 1;
+        let delta = (maior - menor) || 1;
 
-		// @@@ Filtro por horário comercial
-		//for (let h = 8; h <= 18; h++) {
-		for (let h = 0; h <= 23; h++) {
-			html.push(`<tr><td>${format2(h)}:00</td>`);
-			for (let d = 1; d < colunas.length; d++) {
-				const dia = colunas[d];
-				let total = 0;
-				for (let i = 0; i < dados.length; i++) {
-					if (dados[i].dia === dia && dados[i].hora === h) {
-						total = dados[i].total;
-						break;
-					}
-				}
-				let n = (total - menor) / delta;
-				html.push(`<td style="${coresHeatmap(n)}">${total}</td>`);
-			}
-			html.push(`</tr>`);
-		}
+        for (let h = 0; h <= 23; h++) {
+            html.push(`<tr><td>${format2(h)}:00</td>`);
+            for (let d = 1; d < colunas.length; d++) {
+                const dia = colunas[d];
+                let total = 0;
+                for (let i = 0; i < dados.length; i++) {
+                    if (dados[i].dia === dia && dados[i].hora === h) {
+                        total = dados[i].total;
+                        break;
+                    }
+                }
+                let n = (total - menor) / delta;
+                html.push(`<td style="${coresHeatmap(n)}">${total}</td>`);
+            }
+            html.push(`</tr>`);
+        }
 
-		html.push(`</tbody></table>`);
-		document.getElementById("div-heatmap-mensal-presenca").innerHTML = html.join('');
+        html.push(`</tbody></table>`);
+        document.getElementById("div-heatmap-mensal-presenca").innerHTML = html.join('');
 
-		atualizarGraficoPresencaMaxima(maximosPorDia);
-	}
+        atualizarGraficoPresencaMaxima(maximosPorDia);
+    }
 
-	async function atualizarDados() {
+    async function atualizarDados() {
         waitSwal();
 
         try {
@@ -305,7 +279,7 @@
                     return;
                 }
 
-				gerarHeatmapMensalPresenca(obj.mensal_presenca);
+                gerarHeatmapMensalPresenca(obj.mensal_presenca);
 
             } else {
                 await exibirErro(response);
