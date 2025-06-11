@@ -337,11 +337,13 @@
             title: 'Movimentação por Dia da Semana',
             legend: { position: 'none' },
             height: 400,
-            vAxis: { title: 'Quantidade de Pessoas', minValue: 0 },
-            hAxis: { title: 'Dia da Semana' },
+            vAxis: { title: 'Quantidade de Pessoas', minValue: 0, gridlines: {color: 'rgba(255,255,255,0.08)'} },
+            hAxis: { title: 'Dia da Semana', gridlines: {color: 'rgba(255,255,255,0.08)'} },
             bar: { groupWidth: "60%" },
             fontSize: 14,
-            colors: cores
+            colors: cores,
+            backgroundColor: { fill:'transparent' },
+            chartArea: { backgroundColor: { fill: 'transparent' } }
         };
         var chart = new google.visualization.ColumnChart(document.getElementById('div-grafico-semana'));
         chart.draw(data, options);
@@ -446,12 +448,10 @@
             const data_inicial = $("#data_inicial").val();
             const data_final = $("#data_final").val();
             const dia_semana = $("#dia_semana").val();
-
-            // Gráfico semanal
+            // Gráfico semanal (agora interativo com os filtros)
             let respSemana = await fetch(`/obterDadosSemana?data_inicial=${data_inicial}&data_final=${data_final}`);
             let objSemana = await respSemana.json();
             google.charts.setOnLoadCallback(() => gerarGraficoSemanaGoogle(objSemana.semana));
-
             // KPIs
             let totalSemana = objSemana.semana.reduce((acc, cur) => acc + (cur.total || 0), 0);
             $("#kpi-total-semana").text(totalSemana);
