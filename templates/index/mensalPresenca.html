@@ -163,7 +163,7 @@
                 if (presenca > max) max = presenca;
             }
         });
-        let roxoBase = [142, 36, 170]; // #8e24aa
+        let roxoBase = [255, 102, 0]; // Laranja base para fallback
         let html = [`<table class="table table-bordered table-sm w-50 mx-auto" style="height: auto; line-height: 1.2;"><thead><tr><th>Hora</th>`];
         for (let d of dias) html.push(`<th>${d}</th>`);
         html.push(`</tr></thead><tbody>`);
@@ -175,9 +175,18 @@
                 if (v === 0) {
                     style = 'background: none; color: #222;';
                 } else {
-                    let alpha = max ? (0.2 + 0.8 * (v / max)) : 0.2;
-                    let bg = `rgba(${roxoBase[0]},${roxoBase[1]},${roxoBase[2]},${alpha})`;
-                    let color = (alpha > 0.5) ? '#fff' : '#222';
+                    // Degradê laranja
+                    const r0 = 0xff, g0 = 0xff, b0 = 0xff;
+                    const r1 = 0xFF, g1 = 0x66, b1 = 0x00;
+                    let perc = max ? (v / max) : 0;
+                    let r = Math.max(0, Math.min(255, ((perc * r1) + ((1 - perc) * r0)) | 0)).toString(16);
+                    let g = Math.max(0, Math.min(255, ((perc * g1) + ((1 - perc) * g0)) | 0)).toString(16);
+                    let b = Math.max(0, Math.min(255, ((perc * b1) + ((1 - perc) * b0)) | 0)).toString(16);
+                    if (r.length < 2) r = "0" + r;
+                    if (g.length < 2) g = "0" + g;
+                    if (b.length < 2) b = "0" + b;
+                    let bg = `#${r}${g}${b}`;
+                    let color = perc > 0.5 ? '#fff' : '#222';
                     style = `background:${bg};color:${color}`;
                 }
                 html.push(`<td style="${style}">${v}</td>`);

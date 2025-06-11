@@ -173,34 +173,8 @@
         return (relativeLuminance(i) < 0.4) ? "#ffffff" : "#000000";
     }
 
-    function coresHeatmap(perc) {
-        // Roxo degradê
-        const r0 = 0xff, g0 = 0xff, b0 = 0xff;
-        const r1 = 0x8e, g1 = 0x24, b1 = 0xaa; // Roxo escuro
-        let r = Math.max(0, Math.min(255, ((perc * r1) + ((1 - perc) * r0)) | 0)).toString(16);
-        let g = Math.max(0, Math.min(255, ((perc * g1) + ((1 - perc) * g0)) | 0)).toString(16);
-        let b = Math.max(0, Math.min(255, ((perc * b1) + ((1 - perc) * b0)) | 0)).toString(16);
-        if (r.length < 2) r = "0" + r;
-        if (g.length < 2) g = "0" + g;
-        if (b.length < 2) b = "0" + b;
-        const corFundo = "#" + r + g + b;
-        const corTexto = (perc > 0.5) ? "#fff" : "#222";
-        return `background-color: ${corFundo}; color: ${corTexto};`;
-    }
-
-    $("#form").validate({
-        rules: {
-            data_inicial: { required: true },
-            data_final: { required: true }
-        },
-        submitHandler: function () {
-            atualizarDados();
-        }
-    });
-
     function gerarHeatmapDiaSemana(dados) {
         const colunas = ["Total"];
-
         let menor = dados[0].total;
         let maior = dados[0].total;
         let ultimoDia = dados[0].dia;
@@ -216,16 +190,27 @@
                 colunas.push(ultimoDia);
             }
         }
-
         let html = [`<table class="table table-bordered table-sm w-50 mx-auto" style="height: auto; line-height: 1.2;"><thead><tr>`];
         for (let i = 0; i < colunas.length; i++) {
             html.push(`<th>${colunas[i]}</th>`);
         }
-
         html.push(`</tr></thead><tbody>`);
-
         let delta = (maior - menor) || 1;
-
+        function coresHeatmap(perc, total) {
+            if (total === 0) return 'background-color: transparent; color: #222;';
+            // Degradê laranja: branco (#fff) até laranja (#FF6600)
+            const r0 = 0xff, g0 = 0xff, b0 = 0xff;
+            const r1 = 0xFF, g1 = 0x66, b1 = 0x00; // Laranja
+            let r = Math.max(0, Math.min(255, ((perc * r1) + ((1 - perc) * r0)) | 0)).toString(16);
+            let g = Math.max(0, Math.min(255, ((perc * g1) + ((1 - perc) * g0)) | 0)).toString(16);
+            let b = Math.max(0, Math.min(255, ((perc * b1) + ((1 - perc) * b0)) | 0)).toString(16);
+            if (r.length < 2) r = "0" + r;
+            if (g.length < 2) g = "0" + g;
+            if (b.length < 2) b = "0" + b;
+            const corFundo = "#" + r + g + b;
+            const corTexto = (perc > 0.5) ? "#fff" : "#222";
+            return `background-color: ${corFundo}; color: ${corTexto};`;
+        }
         for (let h = 0; h <= 23; h++) {
             html.push(`<tr><td>${format2(h)}:00</td>`);
             for (let d = 1; d < colunas.length; d++) {
@@ -233,16 +218,15 @@
                 let total = 0;
                 for (let i = 0; i < dados.length; i++) {
                     if (dados[i].dia === dia && dados[i].hora === h) {
-                        total = dados[i].total;
+                        total = Math.max(0, Math.round(dados[i].total));
                         break;
                     }
                 }
                 let n = (total - menor) / delta;
-                html.push(`<td style="${coresHeatmap(n)}">${total}</td>`);
+                html.push(`<td style="${coresHeatmap(n, total)}">${total}</td>`);
             }
             html.push(`</tr>`);
         }
-
         html.push(`</tbody></table>`);
         document.getElementById("div-heatmap-dia-semana").innerHTML = html.join('');
     }
