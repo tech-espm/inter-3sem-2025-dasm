@@ -131,81 +131,70 @@
         return (x < 10 ? "0" + x : x.toString());
     }
 
+    function gerarHeatmapMensalPresenca(dados) {
+        if (!dados || !dados.length) {
+            document.getElementById("div-heatmap-mensal-presenca").innerHTML = '<div class="text-center text-muted">Sem dados para o período.</div>';
+            return;
+        }
+        // Exemplo de heatmap degradê roxo
+        let horas = Array.from({length: 24}, (_, i) => i);
+        let dias = [];
+        let matriz = Array(24).fill(0).map(() => Array());
+        dados.forEach(d => {
+            if (!dias.includes(d.dia)) dias.push(d.dia);
+        });
+        dias.sort();
+        dados.forEach(d => {
+            let h = parseInt(d.hora);
+            let diaIdx = dias.indexOf(d.dia);
+            matriz[h][diaIdx] = d.total_entrada - d.total_saida;
+        });
+        let max = Math.max(...matriz.flat().filter(x => x !== undefined));
+        let roxoBase = [142, 36, 170]; // #8e24aa
+        let html = [`<table class="table table-bordered table-sm w-50 mx-auto" style="height: auto; line-height: 1.2;"><thead><tr><th>Hora</th>`];
+        for (let d of dias) html.push(`<th>${d}</th>`);
+        html.push(`</tr></thead><tbody>`);
+        for (let h = 0; h < 24; h++) {
+            html.push(`<tr><td>${h}h</td>`);
+            for (let j = 0; j < dias.length; j++) {
+                let v = matriz[h][j] || 0;
+                let alpha = max ? (0.2 + 0.8 * (v / max)) : 0.2;
+                let bg = `rgba(${roxoBase[0]},${roxoBase[1]},${roxoBase[2]},${alpha})`;
+                let color = (alpha > 0.5) ? '#fff' : '#222';
+                html.push(`<td style="background:${bg};color:${color}">${v}</td>`);
+            }
+            html.push(`</tr>`);
+        }
+        html.push(`</tbody></table>`);
+        document.getElementById("div-heatmap-mensal-presenca").innerHTML = html.join('');
+    }
+
     function atualizarGraficoPresencaMaxima(dados) {
-        let div = document.getElementById("div-grafico-presenca-maxima");
-        div.innerHTML = '<canvas id="grafico-presenca-maxima" style="height: 30vh;"></canvas>';
-
+        if (!dados || !dados.length) {
+            document.getElementById("div-grafico-presenca-maxima").innerHTML = "<div class='text-center text-muted'>Sem dados para o período.</div>";
+            return;
+        }
+        document.getElementById("div-grafico-presenca-maxima").innerHTML = '<canvas id="grafico-presenca-maxima" style="height: 30vh;"></canvas>';
         let labels = [], data = [];
-
         for (let i = 0; i < dados.length; i++) {
             labels.push(dados[i].dia);
-            data.push(dados[i].total);
+            data.push(dados[i].max_presenca);
         }
-
-        let grafico = new Chart(document.getElementById("grafico-presenca-maxima"), {
-            type: "bar",
+        new Chart(document.getElementById("grafico-presenca-maxima"), {
+            type: 'line',
             data: {
                 labels: labels,
                 datasets: [{
-                    label: "Presença Máxima",
-                    backgroundColor: "#D4A5FF", // Roxo claro
-                    hoverBackgroundColor: "#A566FF", // Roxo médio
-                    borderColor: "#8A3FFC", // Roxo escuro
+                    label: 'Presença Máxima',
                     data: data,
-                }],
+                    borderColor: '#8e24aa',
+                    backgroundColor: 'rgba(142,36,170,0.2)',
+                    fill: true
+                }]
             },
             options: {
-                maintainAspectRatio: false,
-                layout: {
-                    padding: {
-                        left: 10,
-                        right: 25,
-                        top: 25,
-                        bottom: 0
-                    }
-                },
-                scales: {
-                    x: {
-                        gridLines: {
-                            display: false,
-                            drawBorder: false
-                        },
-                        ticks: {
-                            maxTicksLimit: 10
-                        },
-                        maxBarThickness: 25,
-                    },
-                    y: {
-                        ticks: {
-                            min: 0,
-                            maxTicksLimit: 10,
-                            padding: 10
-                        },
-                        gridLines: {
-                            color: "rgb(234, 236, 244)",
-                            zeroLineColor: "rgb(234, 236, 244)",
-                            drawBorder: false,
-                            borderDash: [2],
-                            zeroLineBorderDash: [2]
-                        }
-                    },
-                },
-                legend: {
-                    display: false
-                },
-                tooltips: {
-                    titleMarginBottom: 10,
-                    titleFontColor: '#6e707e',
-                    titleFontSize: 14,
-                    backgroundColor: "rgb(255,255,255)",
-                    bodyFontColor: "#858796",
-                    borderColor: '#dddfeb',
-                    borderWidth: 1,
-                    xPadding: 15,
-                    yPadding: 15,
-                    displayColors: false,
-                    caretPadding: 10
-                },
+                responsive: true,
+                plugins: { legend: { display: true } }
             }
         });
     }

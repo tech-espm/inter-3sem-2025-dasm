@@ -174,12 +174,9 @@
     }
 
     function coresHeatmap(perc) {
-        const r0 = 0xff;
-        const g0 = 0xff;
-        const b0 = 0xff;
-        const r1 = 0x4A; // Roxo escuro
-        const g1 = 0x14;
-        const b1 = 0x8C;
+        // Roxo degradê
+        const r0 = 0xff, g0 = 0xff, b0 = 0xff;
+        const r1 = 0x8e, g1 = 0x24, b1 = 0xaa; // Roxo escuro
         let r = Math.max(0, Math.min(255, ((perc * r1) + ((1 - perc) * r0)) | 0)).toString(16);
         let g = Math.max(0, Math.min(255, ((perc * g1) + ((1 - perc) * g0)) | 0)).toString(16);
         let b = Math.max(0, Math.min(255, ((perc * b1) + ((1 - perc) * b0)) | 0)).toString(16);
@@ -187,7 +184,7 @@
         if (g.length < 2) g = "0" + g;
         if (b.length < 2) b = "0" + b;
         const corFundo = "#" + r + g + b;
-        const corTexto = textColorForBackground(corFundo);
+        const corTexto = (perc > 0.5) ? "#fff" : "#222";
         return `background-color: ${corFundo}; color: ${corTexto};`;
     }
 
@@ -255,7 +252,7 @@
 
         try {
             let data_inicial = document.getElementById("data_inicial").value;
-            let data_final = document.getElementById("data_final").value;
+            let data_final = document.getElement_by_id("data_final").value;
             let dia_semana = document.getElementById("dia_semana").value;
             let response = await fetch(`/obterDadosMensalDiaSemana?data_inicial=${data_inicial}&data_final=${data_final}&dia_semana=${dia_semana}`);
 

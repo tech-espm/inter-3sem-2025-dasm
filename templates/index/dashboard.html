@@ -321,7 +321,13 @@
         ];
         let labels = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
         let cores = [
-            "#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF", "#FF9F40", "#2ecc71"
+            "#8e24aa", // Roxo escuro
+            "#7c43bd",
+            "#6a1b9a",
+            "#9c27b0",
+            "#ab47bc",
+            "#ce93d8",
+            "#b39ddb"
         ];
         for (let i = 0; i < 7; i++) {
             dataArray.push([labels[i], totaisPorDia[i], `color: ${cores[i]}`]);
@@ -334,7 +340,8 @@
             vAxis: { title: 'Quantidade de Pessoas', minValue: 0 },
             hAxis: { title: 'Dia da Semana' },
             bar: { groupWidth: "60%" },
-            fontSize: 14
+            fontSize: 14,
+            colors: cores
         };
         var chart = new google.visualization.ColumnChart(document.getElementById('div-grafico-semana'));
         chart.draw(data, options);
@@ -347,7 +354,6 @@
             ctx.clearRect(0, 0, 400, 400);
             return;
         }
-        // Montar matriz [hora][dia] para heatmap
         let horas = Array.from({length: 24}, (_, i) => i);
         let dias = [];
         let matriz = Array(24).fill(0).map(() => Array());
@@ -360,14 +366,13 @@
             let diaIdx = dias.indexOf(d.dia);
             matriz[h][diaIdx] = d.total;
         });
-        // Normalizar para heatmap
-        let max = Math.max(...matriz.flat().filter(x => x !== undefined));
+        let roxo = 'rgba(142,36,170,0.8)'; // #8e24aa
         let data = {
             labels: dias,
             datasets: horas.map((h, i) => ({
                 label: h + 'h',
                 data: matriz[i].map(v => v || 0),
-                backgroundColor: matriz[i].map(v => v ? `rgba(70,143,175,${0.2 + 0.8*(v/max)})` : 'rgba(200,200,200,0.1)'),
+                backgroundColor: matriz[i].map(v => v ? roxo : 'rgba(200,200,200,0.05)'),
                 borderWidth: 0
             }))
         };
@@ -380,8 +385,8 @@
                 responsive: true,
                 indexAxis: 'y',
                 scales: {
-                    x: { stacked: true },
-                    y: { stacked: true }
+                    x: { stacked: true, grid: { display: true, drawBorder: true, color: 'rgba(100,100,100,0.1)' } },
+                    y: { stacked: true, grid: { display: true, drawBorder: true, color: 'rgba(100,100,100,0.1)' } }
                 }
             }
         });
@@ -406,9 +411,11 @@
                 datasets: [{
                     label: 'Presença Máxima',
                     data: data,
-                    borderColor: '#468faf',
-                    backgroundColor: 'rgba(70, 143, 175, 0.2)',
-                    fill: true
+                    borderColor: '#8e24aa',
+                    backgroundColor: 'rgba(142,36,170,0.2)',
+                    fill: true,
+                    pointBackgroundColor: '#8e24aa',
+                    pointBorderColor: '#8e24aa'
                 }]
             },
             options: {
