@@ -448,8 +448,10 @@
             const data_inicial = $("#data_inicial").val();
             const data_final = $("#data_final").val();
             const dia_semana = $("#dia_semana").val();
-            // Gráfico semanal (agora interativo com os filtros)
-            let respSemana = await fetch(`/obterDadosSemana?data_inicial=${data_inicial}&data_final=${data_final}`);
+            // Gráfico semanal (agora filtrando pelos campos do formulário)
+            let urlSemana = `/obterDadosSemana?data_inicial=${data_inicial}&data_final=${data_final}`;
+            if (dia_semana) urlSemana += `&dia_semana=${dia_semana}`;
+            let respSemana = await fetch(urlSemana);
             let objSemana = await respSemana.json();
             google.charts.setOnLoadCallback(() => gerarGraficoSemanaGoogle(objSemana.semana));
             // KPIs

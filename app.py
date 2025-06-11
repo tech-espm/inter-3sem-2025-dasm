@@ -100,14 +100,18 @@ def dashboard():
 @app.route("/obterDadosSemana")
 def obterDadosSemana():
     try:
-        data_inicial_semana = (datetime.today() + timedelta(days=-6)).strftime('%Y-%m-%d')
-        data_final_semana = datetime.today().strftime('%Y-%m-%d')
+        data_inicial = request.args.get('data_inicial')
+        data_final = request.args.get('data_final')
+        dia_semana = request.args.get('dia_semana')
+        if not data_inicial or not data_final:
+            # dia_semana é opcional para o gráfico semanal
+            return json.jsonify({"erro": "Parâmetros obrigatórios não informados."}), 400
         maior_id = banco.obterIdMaximo("passagem")
         resultado = requests.get(f'{config.url_api}?sensor=passage&id_sensor=2&id_inferior={maior_id}')
         dados_novos = resultado.json()
         if dados_novos and len(dados_novos) > 0:
             banco.inserirDados(dados_novos)
-        semana = banco.listarConsolidadoSemana(data_inicial_semana, data_final_semana)
+        semana = banco.listarConsolidadoSemana(data_inicial, data_final, dia_semana)
         return json.jsonify({'semana': semana})
     except Exception as e:
         logger.error(f"Erro ao obter dados da semana: {e}")

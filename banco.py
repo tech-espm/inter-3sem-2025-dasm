@@ -89,18 +89,23 @@ def inserirDados(registros):
         logger.error(f"Erro inesperado ao inserir dados: {e}")
         raise
 
-def listarConsolidadoSemana(data_inicial, data_final):
+def listarConsolidadoSemana(data_inicial, data_final, dia_semana=None):
     try:
         with Session(engine) as sessao:
             parametros = {
                 'data_inicial': data_inicial + ' 00:00:00',
                 'data_final': data_final + ' 23:59:59'
             }
-            registros = sessao.execute(text("""
+            filtro_dia = ''
+            if dia_semana:
+                filtro_dia = 'and dayofweek(data) = :dia_semana'
+                parametros['dia_semana'] = int(dia_semana)
+            registros = sessao.execute(text(f"""
                 select dayofweek(data) dia_semana, extract(hour from data) hora, cast(sum(entrada + saida) as signed) total
                 from passagem
                 where data between :data_inicial and :data_final
                 and id_sensor = 2
+                {filtro_dia}
                 group by dia_semana, hora
             """), parametros)
             return [
