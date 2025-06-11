@@ -108,12 +108,23 @@
     </div>
 </body>
 
+<script src="/static/js/jquery.min.js"></script>
 <script src="/static/js/jquery-validate/jquery.validate.min.js"></script>
 <script src="/static/js/jquery-validate/additional-methods.min.js"></script>
 <script src="/static/js/jquery-validate/localization/messages_pt_BR.min.js"></script>
 <script type="text/javascript" src="/static/js/chart.js/chart.min.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 <script type="text/javascript">
+    function waitSwal(msg) {
+        Swal.fire({
+            title: msg || 'Aguarde...',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+    }
+
     "use strict";
 
     function format2(x) {
@@ -324,5 +335,3 @@
 
     atualizarDados();
 </script>
-
-{% endblock %}

@@ -110,13 +110,24 @@
     </div>
 </body>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="/static/js/jquery-validate/jquery.validate.min.js"></script>
 <script src="/static/js/jquery-validate/additional-methods.min.js"></script>
 <script src="/static/js/jquery-validate/localization/messages_pt_BR.min.js"></script>
 <!-- Google Charts loader -->
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 <script type="text/javascript">
+    function waitSwal(msg) {
+        Swal.fire({
+            title: msg || 'Aguarde...',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+    }
+
     "use strict";
 
     function relativeLuminance(rgb) {

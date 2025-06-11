@@ -137,17 +137,23 @@ def obterDadosMensalPresenca():
     try:
         data_inicial = request.args.get('data_inicial')
         data_final = request.args.get('data_final')
+        logger.info(f"Parâmetros recebidos: data_inicial={data_inicial}, data_final={data_final}")
         if not data_inicial or not data_final:
+            logger.warning("Parâmetros obrigatórios não informados.")
             return json.jsonify({"erro": "Parâmetros obrigatórios não informados."}), 400
         maior_id = banco.obterIdMaximo("passagem")
+        logger.info(f"Maior id da tabela passagem: {maior_id}")
         resultado = requests.get(f'{config.url_api}?sensor=passage&id_sensor=2&id_inferior={maior_id}')
+        logger.info(f"Status da requisição externa: {resultado.status_code}")
         dados_novos = resultado.json()
+        logger.info(f"Novos dados recebidos: {len(dados_novos) if dados_novos else 0}")
         if dados_novos and len(dados_novos) > 0:
             banco.inserirDados(dados_novos)
         mensal_presenca = banco.listarConsolidadoMensalPresenca(data_inicial, data_final)
+        logger.info(f"Dados retornados para o front: {len(mensal_presenca)} registros")
         return json.jsonify({'mensal_presenca': mensal_presenca})
     except Exception as e:
-        logger.error(f"Erro ao obter dados mensal de presença: {e}")
+        logger.error(f"Erro ao obter dados mensal de presença: {e}\n{traceback.format_exc()}")
         return json.jsonify({'erro': 'Erro ao obter dados mensal de presença.'}), 500
 
 @app.route('/semana')
