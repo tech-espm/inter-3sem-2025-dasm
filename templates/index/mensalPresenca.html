@@ -171,10 +171,16 @@
             html.push(`<tr><td>${h}h</td>`);
             for (let j = 0; j < dias.length; j++) {
                 let v = matriz[h][j] || 0;
-                let alpha = max ? (0.2 + 0.8 * (v / max)) : 0.2;
-                let bg = `rgba(${roxoBase[0]},${roxoBase[1]},${roxoBase[2]},${alpha})`;
-                let color = (alpha > 0.5) ? '#fff' : '#222';
-                html.push(`<td style="background:${bg};color:${color}">${v}</td>`);
+                let style = '';
+                if (v === 0) {
+                    style = 'background: none; color: #222;';
+                } else {
+                    let alpha = max ? (0.2 + 0.8 * (v / max)) : 0.2;
+                    let bg = `rgba(${roxoBase[0]},${roxoBase[1]},${roxoBase[2]},${alpha})`;
+                    let color = (alpha > 0.5) ? '#fff' : '#222';
+                    style = `background:${bg};color:${color}`;
+                }
+                html.push(`<td style="${style}">${v}</td>`);
             }
             html.push(`</tr>`);
         }
