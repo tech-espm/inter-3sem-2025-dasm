@@ -252,7 +252,7 @@
 
         try {
             let data_inicial = document.getElementById("data_inicial").value;
-            let data_final = document.getElement_by_id("data_final").value;
+            let data_final = document.getElementById("data_final").value;
             let dia_semana = document.getElementById("dia_semana").value;
             let response = await fetch(`/obterDadosMensalDiaSemana?data_inicial=${data_inicial}&data_final=${data_final}&dia_semana=${dia_semana}`);
 
