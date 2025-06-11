@@ -134,22 +134,35 @@
     function gerarHeatmapMensalPresenca(dados) {
         if (!dados || !dados.length) {
             document.getElementById("div-heatmap-mensal-presenca").innerHTML = '<div class="text-center text-muted">Sem dados para o período.</div>';
+            atualizarGraficoPresencaMaxima([]);
             return;
         }
-        // Exemplo de heatmap degradê roxo
+        // Heatmap de presença acumulada (nunca negativo)
         let horas = Array.from({length: 24}, (_, i) => i);
         let dias = [];
         let matriz = Array(24).fill(0).map(() => Array());
+        // Organizar dados por dia
+        let dadosPorDia = {};
         dados.forEach(d => {
             if (!dias.includes(d.dia)) dias.push(d.dia);
+            if (!dadosPorDia[d.dia]) dadosPorDia[d.dia] = [];
+            dadosPorDia[d.dia].push(d);
         });
         dias.sort();
-        dados.forEach(d => {
-            let h = parseInt(d.hora);
-            let diaIdx = dias.indexOf(d.dia);
-            matriz[h][diaIdx] = d.total_entrada - d.total_saida;
+        let max = 0;
+        // Para cada dia, calcular presença acumulada hora a hora
+        dias.forEach((dia, j) => {
+            let presenca = 0;
+            let registros = dadosPorDia[dia].sort((a, b) => parseInt(a.hora) - parseInt(b.hora));
+            for (let h = 0; h < 24; h++) {
+                let dadoHora = registros.find(x => parseInt(x.hora) === h);
+                if (dadoHora) {
+                    presenca = Math.max(0, presenca + dadoHora.total_entrada - dadoHora.total_saida);
+                }
+                matriz[h][j] = presenca;
+                if (presenca > max) max = presenca;
+            }
         });
-        let max = Math.max(...matriz.flat().filter(x => x !== undefined));
         let roxoBase = [142, 36, 170]; // #8e24aa
         let html = [`<table class="table table-bordered table-sm w-50 mx-auto" style="height: auto; line-height: 1.2;"><thead><tr><th>Hora</th>`];
         for (let d of dias) html.push(`<th>${d}</th>`);
@@ -167,6 +180,28 @@
         }
         html.push(`</tbody></table>`);
         document.getElementById("div-heatmap-mensal-presenca").innerHTML = html.join('');
+
+        // Calcular presença máxima por dia (corrigido)
+        let maximosPorDia = [];
+        let maxPorDia = {};
+        let ultimoDia = null;
+        let presencaAtual = 0;
+        for (let i = 0; i < dados.length; i++) {
+            const d = dados[i];
+            const key = d.dia;
+            if (ultimoDia !== key) {
+                presencaAtual = 0;
+                ultimoDia = key;
+            }
+            presencaAtual = Math.max(0, presencaAtual + d.total_entrada - d.total_saida);
+            if (!maxPorDia[key] || presencaAtual > maxPorDia[key]) {
+                maxPorDia[key] = presencaAtual;
+            }
+        }
+        for (const dia in maxPorDia) {
+            maximosPorDia.push({ dia: dia, max_presenca: maxPorDia[dia] });
+        }
+        atualizarGraficoPresencaMaxima(maximosPorDia);
     }
 
     function atualizarGraficoPresencaMaxima(dados) {
@@ -226,74 +261,6 @@
             atualizarDados();
         }
     });
-
-    function gerarHeatmapMensalPresenca(dados) {
-        const colunas = ["Total"];
-
-        let ultimoDia = null;
-        let maximosPorDia = [];
-        for (let i = 0; i < dados.length; i++) {
-            if (!ultimoDia || ultimoDia !== dados[i].dia) {
-                ultimoDia = dados[i].dia;
-                dados[i].total = 0;
-                maximosPorDia.push({ dia: dados[i].dia, total: 0 });
-            } else {
-                dados[i].total = Math.max(0, dados[i - 1].total + dados[i].total_entrada - dados[i].total_saida);
-                maximosPorDia[maximosPorDia.length - 1].total = Math.max(maximosPorDia[maximosPorDia.length - 1].total, dados[i].total);
-            }
-        }
-
-        let menor = dados[0].total;
-        let maior = dados[0].total;
-        ultimoDia = dados[0].dia;
-        colunas.push(ultimoDia);
-        for (let i = 1; i < dados.length; i++) {
-            const dado = dados[i];
-            if (menor > dado.total)
-                menor = dado.total;
-            if (maior < dado.total)
-                maior = dado.total;
-            if (ultimoDia !== dado.dia) {
-                ultimoDia = dado.dia;
-                colunas.push(ultimoDia);
-            }
-        }
-
-        let html = [`<table class="table table-bordered table-sm w-50 mx-auto" style="height: auto; line-height: 1.2;"><thead><tr>`];
-        for (let i = 0; i < colunas.length; i++) {
-            html.push(`<th>${colunas[i]}</th>`);
-        }
-
-        html.push(`
-            </tr>
-            </thead>
-            <tbody>
-        `);
-
-        let delta = (maior - menor) || 1;
-
-        for (let h = 0; h <= 23; h++) {
-            html.push(`<tr><td>${format2(h)}:00</td>`);
-            for (let d = 1; d < colunas.length; d++) {
-                const dia = colunas[d];
-                let total = 0;
-                for (let i = 0; i < dados.length; i++) {
-                    if (dados[i].dia === dia && dados[i].hora === h) {
-                        total = dados[i].total;
-                        break;
-                    }
-                }
-                let n = (total - menor) / delta;
-                html.push(`<td style="${coresHeatmap(n)}">${total}</td>`);
-            }
-            html.push(`</tr>`);
-        }
-
-        html.push(`</tbody></table>`);
-        document.getElementById("div-heatmap-mensal-presenca").innerHTML = html.join('');
-
-        atualizarGraficoPresencaMaxima(maximosPorDia);
-    }
 
     async function atualizarDados() {
         waitSwal();
