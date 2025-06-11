@@ -255,11 +255,20 @@
         chart.draw(data, options);
     }
 
+    async function exibirErro(response) {
+        const errorText = await response.text();
+        Swal.fire("Erro", `Erro ao listar os dados: ${errorText}`, "error");
+    }
+
     async function atualizarDados() {
         waitSwal();
 
         try {
-            let response = await fetch(`/obterDadosSemana`);
+            const dataInicial = new Date();
+            dataInicial.setDate(dataInicial.getDate() - 7);
+            const dataFinal = new Date();
+
+            const response = await fetch(`/obterDadosSemana?data_inicial=${dataInicial.toISOString().split('T')[0]}&data_final=${dataFinal.toISOString().split('T')[0]}`);
 
             if (response.ok) {
                 Swal.close();

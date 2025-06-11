@@ -337,8 +337,20 @@
             title: '',
             legend: { position: 'none' },
             height: 400,
-            hAxis: { title: '', gridlines: {color: 'rgba(255,255,255,0.08)'} },
-            vAxis: { title: '', minValue: 0, gridlines: {color: 'rgba(255,255,255,0.08)'} },
+            hAxis: { 
+                title: '', 
+                gridlines: {color: 'rgba(255,255,255,0.08)'},
+                textStyle: { color: '#A9D6E5', fontSize: 16 },
+                baselineColor: '#A9D6E5',
+                ticks: labels.map((l, i) => ({ v: l, f: l }))
+            },
+            vAxis: { 
+                title: '', 
+                minValue: 0, 
+                gridlines: {color: 'rgba(255,255,255,0.08)'},
+                textStyle: { color: '#A9D6E5', fontSize: 16 },
+                baselineColor: '#A9D6E5'
+            },
             bar: { groupWidth: "60%" },
             fontSize: 14,
             colors: cores,
@@ -401,8 +413,16 @@
                 responsive: true,
                 indexAxis: 'y',
                 scales: {
-                    x: { stacked: true, grid: { display: true, drawBorder: true, color: 'rgba(100,100,100,0.1)' } },
-                    y: { stacked: true, grid: { display: true, drawBorder: true, color: 'rgba(100,100,100,0.1)' } }
+                    x: { 
+                        stacked: true, 
+                        grid: { display: true, drawBorder: true, color: 'rgba(100,100,100,0.1)' },
+                        ticks: { color: '#A9D6E5', font: { size: 16 } }
+                    },
+                    y: { 
+                        stacked: true, 
+                        grid: { display: true, drawBorder: true, color: 'rgba(100,100,100,0.1)' },
+                        ticks: { color: '#A9D6E5', font: { size: 16 } }
+                    }
                 }
             }
         });
@@ -436,7 +456,15 @@
             },
             options: {
                 responsive: true,
-                plugins: { legend: { display: true } }
+                plugins: { legend: { display: true } },
+                scales: {
+                    x: {
+                        ticks: { color: '#A9D6E5', font: { size: 16 } }
+                    },
+                    y: {
+                        ticks: { color: '#A9D6E5', font: { size: 16 } }
+                    }
+                }
             }
         });
     }
@@ -450,7 +478,6 @@
             const dia_semana = $("#dia_semana").val();
             // Gráfico semanal (agora filtrando pelos campos do formulário)
             let urlSemana = `/obterDadosSemana?data_inicial=${data_inicial}&data_final=${data_final}`;
-            if (dia_semana) urlSemana += `&dia_semana=${dia_semana}`;
             let respSemana = await fetch(urlSemana);
             let objSemana = await respSemana.json();
             google.charts.setOnLoadCallback(() => gerarGraficoSemanaGoogle(objSemana.semana));
