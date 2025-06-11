@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <link rel="stylesheet" href="/static/css/estilo.css">
     <style>
@@ -187,165 +186,307 @@
                 </div>
                 <div class="col-sm-6">
                     <h1 class="text-center mb-4">Dashboard DASM</h1>
-                    <!-- Adicionado: Exibe o nome do usuário logado -->
                     <h2 class="subtitulo text-center">Bem-vindo, {{ usuario_nome }}!</h2>
                     <h2 class="subtitulo text-center">Análise de Dados para Manutenções Programadas</h2>
                     <p class="text-center">Visualize e analise os dados de passagens e manutenções de forma eficiente.</p>
-                    <button class="btn btn-primary w-60" disabled>Atualizar Dados (em breve)</button>
                 </div>
             </div>
-        
-            <div class="row">
-                <div class="col-lg-5 mb-4">
-                    <div class="glass-container">
-                        <h3 class="subtitulo">Selecione o Período</h3>
-                        <p>Escolha as datas para visualizar os dados de passagens e manutenções.</p>
+            <!-- KPIs -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="glass-container text-center">
+                        <div class="nums" id="kpi-total-semana">-</div>
+                        <div>Total Semana</div>
                     </div>
                 </div>
-                <div class="col-lg-7 mb-4">
+                <div class="col-md-3">
+                    <div class="glass-container text-center">
+                        <div class="nums" id="kpi-total-mes">-</div>
+                        <div>Total Mês</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="glass-container text-center">
+                        <div class="nums" id="kpi-dia-mais-mov">-</div>
+                        <div>Dia Mais Movimentado</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="glass-container text-center">
+                        <div class="nums" id="kpi-presenca-max">-</div>
+                        <div>Presença Máxima</div>
+                    </div>
+                </div>
+            </div>
+            <!-- Filtros -->
+            <div class="row mb-4">
+                <div class="col-lg-12">
                     <div class="glass-container">
-                        <form id="form">
-                            <div class="row">
-                                <div class="col-sm-6 mb-3">
-                                    <div class="form-group">
-                                        <label for="data_inicial" style="color: var(--aqua-blue-2);">Data Inicial</label>
-                                        <input id="data_inicial" name="data_inicial" class="form-control" type="date" value="{{mes_passado}}" required>
-                                    </div>
-                                </div>
-                                <div class="col-sm-6 mb-3">
-                                    <div class="form-group">
-                                        <label for="data_final" style="color: var(--aqua-blue-2);">Data Final</label>
-                                        <input id="data_final" name="data_final" class="form-control" type="date" value="{{hoje}}" required>
-                                    </div>
-                                </div>
+                        <form id="filtros-dashboard" class="row g-3 align-items-end">
+                            <div class="col-md-3">
+                                <label for="data_inicial" class="form-label">Data Inicial</label>
+                                <input type="date" class="form-control" id="data_inicial" name="data_inicial" required>
                             </div>
-                            <button type="submit" class="btn btn-primary w-100">Listar</button>
+                            <div class="col-md-3">
+                                <label for="data_final" class="form-label">Data Final</label>
+                                <input type="date" class="form-control" id="data_final" name="data_final" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="dia_semana" class="form-label">Dia da Semana</label>
+                                <select class="form-control" id="dia_semana" name="dia_semana">
+                                    <option value="">Todos</option>
+                                    <option value="1">Domingo</option>
+                                    <option value="2">Segunda</option>
+                                    <option value="3">Terça</option>
+                                    <option value="4">Quarta</option>
+                                    <option value="5">Quinta</option>
+                                    <option value="6">Sexta</option>
+                                    <option value="7">Sábado</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+                            </div>
                         </form>
                     </div>
                 </div>
             </div>
-            <div class="glass-container fade-in-section">
-                <div class="row">
-                    <div class="col-lg-6 mb-4">
-                        <p class="subtitulo">Fluxo Semanal</p>
-                        <p id="total_visitas" class="nums">1200 passagens (aguardando dados)</p>
-                        <div class="pt-4">
-                            <p class="subtitulo">Fluxo Mensal</p>
-                            <p id="resultado" class="nums">432.000 passagens (aguardando dados)</p>
-                        </div>
-                    </div>
-                    <div class="col-lg-6 mb-4">
-                        <canvas id="graficoAtratividade" width="100%" height="60">
-                            <p class="text-center">Gráfico Mensal será exibido aqui.</p>
-                        </canvas>
+            <!-- Gráficos lado a lado -->
+            <div class="row mb-4">
+                <div class="col-lg-6">
+                    <div class="glass-container">
+                        <h3 class="subtitulo">Movimentação Semanal</h3>
+                        <div id="div-grafico-semana" style="height: 400px;"></div>
                     </div>
                 </div>
-                <hr style="border-color: rgba(169, 214, 229, 0.25);">
-                <div class="row">
-                    <div class="col-lg-6 mb-4" id="div-heatmap">
-                        <p class="subtitulo">Total Passagens por Dia</p>
-                        <table class="table-bordered table-sm mx-auto" style="height: auto; line-height: 1.2;">
-                            <thead>
-                                <tr>
-                                    <th>Segunda</th><th>Terça</th><th>Quarta</th><th>Quinta</th><th>Sexta</th><th>Sábado</th><th>Domingo</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>100</td><td>120</td><td>150</td><td>130</td><td>140</td><td>200</td><td>180</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                <div class="col-lg-6">
+                    <div class="glass-container">
+                        <h3 class="subtitulo">Consolidado por Dia da Semana (Heatmap)</h3>
+                        <canvas id="grafico-heatmap-dia-semana" style="height: 400px;"></canvas>
                     </div>
-                    <div class="col-lg-6 mb-4">
-                        <canvas id="graficoFluxoHora" width="100%" height="60">
-                            <p class="text-center">Gráfico de Fluxo por Hora será exibido aqui.</p>
-                        </canvas>
+                </div>
+            </div>
+            <div class="row mb-4">
+                <div class="col-lg-12">
+                    <div class="glass-container">
+                        <h3 class="subtitulo">Presença Máxima por Dia</h3>
+                        <div id="div-grafico-presenca-maxima"></div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script>
-        // Google Charts
-        google.charts.load('current', {'packages':['corechart']});
-
-        function gerarGraficoSemanaGoogle(dados) {
-            let totaisPorDia = [0, 0, 0, 0, 0, 0, 0]; // Domingo a Sábado
-            for (let i = 0; i < dados.length; i++) {
-                let d = dados[i];
-                if (d.dia_semana >= 1 && d.dia_semana <= 7) {
-                    totaisPorDia[d.dia_semana - 1] += d.total;
-                }
+    // Função utilitária para SweetAlert2
+    function waitSwal(msg) {
+        Swal.fire({
+            title: msg || 'Aguarde...',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
             }
+        });
+    }
 
-            let dataArray = [
-                ['Dia', 'Total', { role: 'style' }]
-            ];
-            let labels = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
-            let cores = [
-                "#FF6384", // Domingo
-                "#36A2EB", // Segunda
-                "#FFCE56", // Terça
-                "#4BC0C0", // Quarta
-                "#9966FF", // Quinta
-                "#FF9F40", // Sexta
-                "#2ecc71"  // Sábado
-            ];
+    // Preencher datas padrão
+    $(function() {
+        const hoje = new Date();
+        const mesPassado = new Date();
+        mesPassado.setDate(hoje.getDate() - 29);
+        $("#data_inicial").val(mesPassado.toISOString().slice(0,10));
+        $("#data_final").val(hoje.toISOString().slice(0,10));
+    });
 
-            for (let i = 0; i < 7; i++) {
-                dataArray.push([labels[i], totaisPorDia[i], `color: ${cores[i]}`]);
-            }
+    // Google Charts
+    google.charts.load('current', {'packages':['corechart']});
 
-            var data = google.visualization.arrayToDataTable(dataArray);
+    let chartHeatmap = null;
 
-            var options = {
-                title: 'Movimentação por Dia da Semana',
-                legend: { position: 'none' },
-                height: 400,
-                vAxis: { title: 'Quantidade de Pessoas', minValue: 0 },
-                hAxis: { title: 'Dia da Semana' },
-                bar: { groupWidth: "60%" },
-                fontSize: 14
-            };
-
-            var chart = new google.visualization.ColumnChart(document.getElementById('div-grafico-semana'));
-            chart.draw(data, options);
-        }
-
-        async function atualizarDados() {
-            waitSwal();
-
-            try {
-                let response = await fetch(`/obterDadosSemana`);
-
-                if (response.ok) {
-                    Swal.close();
-
-                    const obj = await response.json();
-                    if (!obj || !obj.semana || !obj.semana.length) {
-                        Swal.fire("Erro", "Sem dados no período especificado!", "error");
-                        return;
-                    }
-
-                    gerarHeatmapSemana(obj.semana);
-                    // Aguarda o carregamento do Google Charts antes de desenhar
-                    google.charts.setOnLoadCallback(() => gerarGraficoSemanaGoogle(obj.semana));
-                } else {
-                    await exibirErro(response);
-                }
-            } catch (ex) {
-                Swal.fire("Erro", "Erro ao listar os dados: " + ex.message, "error");
+    // Gráfico semanal (colunas)
+    function gerarGraficoSemanaGoogle(dados) {
+        let totaisPorDia = [0, 0, 0, 0, 0, 0, 0];
+        for (let i = 0; i < dados.length; i++) {
+            let d = dados[i];
+            if (d.dia_semana >= 1 && d.dia_semana <= 7) {
+                totaisPorDia[d.dia_semana - 1] += d.total;
             }
         }
+        let dataArray = [
+            ['Dia', 'Total', { role: 'style' }]
+        ];
+        let labels = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
+        let cores = [
+            "#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF", "#FF9F40", "#2ecc71"
+        ];
+        for (let i = 0; i < 7; i++) {
+            dataArray.push([labels[i], totaisPorDia[i], `color: ${cores[i]}`]);
+        }
+        var data = google.visualization.arrayToDataTable(dataArray);
+        var options = {
+            title: 'Movimentação por Dia da Semana',
+            legend: { position: 'none' },
+            height: 400,
+            vAxis: { title: 'Quantidade de Pessoas', minValue: 0 },
+            hAxis: { title: 'Dia da Semana' },
+            bar: { groupWidth: "60%" },
+            fontSize: 14
+        };
+        var chart = new google.visualization.ColumnChart(document.getElementById('div-grafico-semana'));
+        chart.draw(data, options);
+    }
 
-        atualizarDados();
+    // Heatmap por dia da semana
+    function gerarHeatmapDiaSemana(dados) {
+        if (!dados || !dados.length) {
+            const ctx = document.getElementById('grafico-heatmap-dia-semana').getContext('2d');
+            ctx.clearRect(0, 0, 400, 400);
+            return;
+        }
+        // Montar matriz [hora][dia] para heatmap
+        let horas = Array.from({length: 24}, (_, i) => i);
+        let dias = [];
+        let matriz = Array(24).fill(0).map(() => Array());
+        dados.forEach(d => {
+            if (!dias.includes(d.dia)) dias.push(d.dia);
+        });
+        dias.sort();
+        dados.forEach(d => {
+            let h = parseInt(d.hora);
+            let diaIdx = dias.indexOf(d.dia);
+            matriz[h][diaIdx] = d.total;
+        });
+        // Normalizar para heatmap
+        let max = Math.max(...matriz.flat().filter(x => x !== undefined));
+        let data = {
+            labels: dias,
+            datasets: horas.map((h, i) => ({
+                label: h + 'h',
+                data: matriz[i].map(v => v || 0),
+                backgroundColor: matriz[i].map(v => v ? `rgba(70,143,175,${0.2 + 0.8*(v/max)})` : 'rgba(200,200,200,0.1)'),
+                borderWidth: 0
+            }))
+        };
+        if (chartHeatmap) chartHeatmap.destroy();
+        chartHeatmap = new Chart(document.getElementById('grafico-heatmap-dia-semana'), {
+            type: 'bar',
+            data: data,
+            options: {
+                plugins: { legend: { display: false } },
+                responsive: true,
+                indexAxis: 'y',
+                scales: {
+                    x: { stacked: true },
+                    y: { stacked: true }
+                }
+            }
+        });
+    }
+
+    // Gráfico de presença máxima (linha)
+    function atualizarGraficoPresencaMaxima(dados) {
+        if (!dados || !dados.length) {
+            $("#div-grafico-presenca-maxima").html("<div class='text-center text-muted'>Sem dados para o período.</div>");
+            return;
+        }
+        $("#div-grafico-presenca-maxima").html('<canvas id="grafico-presenca-maxima" style="height: 30vh;"></canvas>');
+        let labels = [], data = [];
+        for (let i = 0; i < dados.length; i++) {
+            labels.push(dados[i].dia);
+            data.push(dados[i].max_presenca);
+        }
+        new Chart(document.getElementById("grafico-presenca-maxima"), {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Presença Máxima',
+                    data: data,
+                    borderColor: '#468faf',
+                    backgroundColor: 'rgba(70, 143, 175, 0.2)',
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: true } }
+            }
+        });
+    }
+
+    // Atualizar todos os gráficos
+    async function atualizarDashboard() {
+        waitSwal();
+        try {
+            const data_inicial = $("#data_inicial").val();
+            const data_final = $("#data_final").val();
+            const dia_semana = $("#dia_semana").val();
+
+            // Gráfico semanal
+            let respSemana = await fetch(`/obterDadosSemana?data_inicial=${data_inicial}&data_final=${data_final}`);
+            let objSemana = await respSemana.json();
+            google.charts.setOnLoadCallback(() => gerarGraficoSemanaGoogle(objSemana.semana));
+
+            // KPIs
+            let totalSemana = objSemana.semana.reduce((acc, cur) => acc + (cur.total || 0), 0);
+            $("#kpi-total-semana").text(totalSemana);
+
+            // Consolidado por dia da semana (heatmap)
+            if (dia_semana) {
+                let respDiaSemana = await fetch(`/obterDadosMensalDiaSemana?data_inicial=${data_inicial}&data_final=${data_final}&dia_semana=${dia_semana}`);
+                let objDiaSemana = await respDiaSemana.json();
+                gerarHeatmapDiaSemana(objDiaSemana.mensal_dia_semana);
+                let totalMes = objDiaSemana.mensal_dia_semana.reduce((acc, cur) => acc + (cur.total || 0), 0);
+                $("#kpi-total-mes").text(totalMes);
+                let diaMaisMov = objDiaSemana.mensal_dia_semana.reduce((max, cur) => cur.total > max.total ? cur : max, {total:0, dia:'-'});
+                $("#kpi-dia-mais-mov").text(diaMaisMov.dia);
+            } else {
+                $("#grafico-heatmap-dia-semana").get(0).getContext('2d').clearRect(0,0,400,400);
+                $("#kpi-total-mes").text('-');
+                $("#kpi-dia-mais-mov").text('-');
+            }
+
+            // Presença máxima por dia
+            let respPresenca = await fetch(`/obterDadosMensalPresenca?data_inicial=${data_inicial}&data_final=${data_final}`);
+            let objPresenca = await respPresenca.json();
+            // Calcular presença máxima por dia
+            let maximosPorDia = [];
+            let presencaPorDia = {};
+            for (let i = 0; i < objPresenca.mensal_presenca.length; i++) {
+                const d = objPresenca.mensal_presenca[i];
+                const key = d.dia;
+                presencaPorDia[key] = presencaPorDia[key] || 0;
+                let presenca = (presencaPorDia[key] || 0) + d.total_entrada - d.total_saida;
+                presencaPorDia[key] = Math.max(0, presenca);
+                if (!maximosPorDia.find(x => x.dia === key) || presencaPorDia[key] > maximosPorDia.find(x => x.dia === key).max_presenca) {
+                    let idx = maximosPorDia.findIndex(x => x.dia === key);
+                    if (idx === -1) maximosPorDia.push({ dia: key, max_presenca: presencaPorDia[key] });
+                    else maximosPorDia[idx].max_presenca = presencaPorDia[key];
+                }
+            }
+            atualizarGraficoPresencaMaxima(maximosPorDia);
+            let presencaMax = maximosPorDia.reduce((max, cur) => cur.max_presenca > max ? cur.max_presenca : max, 0);
+            $("#kpi-presenca-max").text(presencaMax);
+
+            Swal.close();
+        } catch (ex) {
+            Swal.fire("Erro", "Erro ao atualizar o dashboard: " + ex.message, "error");
+        }
+    }
+
+    $("#filtros-dashboard").on("submit", function(e) {
+        e.preventDefault();
+        atualizarDashboard();
+    });
+
+    // Atualiza ao carregar
+    $(document).ready(function() {
+        atualizarDashboard();
+    });
     </script>
 </body>
 </html>
